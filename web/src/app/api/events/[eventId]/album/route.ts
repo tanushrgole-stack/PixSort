@@ -129,7 +129,7 @@ export async function GET(req: NextRequest, { params }: Params) {
   const momentCount: Record<string, { name: string; count: number }> = {};
   for (const row of (momentSummaryRows ?? [])) {
     const mid = row.moment_id as string;
-    const mname = (row.moments as { name: string } | null)?.name ?? "";
+    const mname = (row.moments as unknown as { name: string } | null)?.name ?? "";
     if (!momentCount[mid]) momentCount[mid] = { name: mname, count: 0 };
     momentCount[mid].count++;
   }

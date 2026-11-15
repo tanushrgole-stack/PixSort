@@ -80,7 +80,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
   // If opting out, also delete all face assignments for this person
   if (patch.opted_out === true) {
-    await db.table("faces").update({ person_id: null }).eq("person_id", person_id).execute();
+    await db.from("faces").update({ person_id: null }).eq("person_id", person_id);
   }
 
   const { data, error } = await db

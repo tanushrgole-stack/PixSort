@@ -18,13 +18,14 @@ interface Toast {
 
 interface ToastCtx {
   toast: (message: string, kind?: ToastKind, duration?: number) => void;
+  addToast: (options: { kind?: ToastKind; message: string; duration?: number }) => void;
   success: (msg: string) => void;
   error:   (msg: string) => void;
   info:    (msg: string) => void;
 }
 
 const Ctx = createContext<ToastCtx>({
-  toast: () => {}, success: () => {}, error: () => {}, info: () => {},
+  toast: () => {}, addToast: () => {}, success: () => {}, error: () => {}, info: () => {},
 });
 
 const ICONS: Record<ToastKind, ReactNode> = {
@@ -86,6 +87,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const ctx: ToastCtx = {
     toast:   add,
+    addToast: ({ message, kind, duration }) => add(message, kind, duration),
     success: (m) => add(m, "success"),
     error:   (m) => add(m, "error"),
     info:    (m) => add(m, "info"),

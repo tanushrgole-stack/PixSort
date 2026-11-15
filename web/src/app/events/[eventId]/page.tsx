@@ -4,13 +4,21 @@ import { useState, useCallback, Suspense, lazy } from 'react';
 import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEventData } from '@/hooks/useEventData';
+import { useRealtimePhotos } from '@/hooks/useRealtimePhotos';
 import { getGuestSession } from '@/lib/guest-session';
 import { EventHeader } from '@/components/event/EventHeader';
+import { MostLovedRow } from '@/components/event/MostLovedRow';
+import { NewPhotosBanner } from '@/components/event/NewPhotosBanner';
+import { MomentsManagerModal } from '@/components/event/MomentsManagerModal';
+import { DuplicateCleanupModal } from '@/components/event/DuplicateCleanupModal';
+import { HostToolsModal } from '@/components/event/HostToolsModal';
+import Lightbox from '@/components/event/Lightbox';
 import { Skeleton } from '@/components/ui';
 import PhotoUploader from '@/components/PhotoUploader';
 import ProcessingProgressBar from '@/components/ProcessingProgressBar';
+import type { PhotoItem } from '@/types/event-ui';
 
-// Lazy-load tabs for code splitting
+// Lazy-load tabs for performance
 const MyPhotos = lazy(() => import('@/components/event/tabs/MyPhotos'));
 const AllPhotos = lazy(() => import('@/components/event/tabs/AllPhotos'));
 const Everyone = lazy(() => import('@/components/event/tabs/Everyone'));
@@ -19,10 +27,10 @@ const Favorites = lazy(() => import('@/components/event/tabs/Favorites'));
 type TabId = 'my' | 'all' | 'everyone' | 'favorites';
 
 const TABS: { id: TabId; label: string; emoji: string }[] = [
-  { id: 'my',       label: 'My Photos',  emoji: '🤳' },
-  { id: 'all',      label: 'All Photos', emoji: '📸' },
-  { id: 'everyone', label: 'Everyone',   emoji: '👥' },
-  { id: 'favorites',label: 'Favorites',  emoji: '♥' },
+  { id: 'my',        label: 'My Photos',  emoji: '🤳' },
+  { id: 'all',       label: 'All Photos', emoji: '📸' },
+  { id: 'everyone',  label: 'Everyone',   emoji: '👥' },
+  { id: 'favorites', label: 'Favorites',  emoji: '♥' },
 ];
 
 function TabSkeleton() {
@@ -39,18 +47,46 @@ function TabSkeleton() {
 
 export default function EventPage() {
   const { eventId } = useParams<{ eventId: string }>();
-  const { event, moments, members, progress, myPerson, canUpload, isLoading } = useEventData(eventId);
+  const {
+    event,
+    moments,
+    members,
+    progress,
+    myPerson,
+    canUpload,
+    isLoading,
+    refetch,
+  } = useEventData(eventId);
 
   const [activeTab, setActiveTab] = useState<TabId>('my');
   const [activeMoment, setActiveMoment] = useState<string>('all');
   const [showUploader, setShowUploader] = useState(false);
 
+  // Phase 2 Modals state
+  const [showMomentsModal, setShowMomentsModal] = useState(false);
+  const [showDuplicatesModal, setShowDuplicatesModal] = useState(false);
+  const [showHostToolsModal, setShowHostToolsModal] = useState(false);
+  const [lovedLightboxPhoto, setLovedLightboxPhoto] = useState<PhotoItem | null>(null);
+
   const session = getGuestSession();
   const userId = session?.userId;
+
+  // Realtime live updates
+  const { newCount, clearNew } = useRealtimePhotos({
+    eventId,
+    personId: myPerson?.personId,
+    userId,
+    onNewPhotos: () => refetch(),
+  });
 
   const handleMomentChange = useCallback((id: string) => {
     setActiveMoment(id);
   }, []);
+
+  const isHost = Boolean(
+    members.some((m) => m.userId === userId && m.role === 'host') ||
+      (event && (event as { host_id?: string }).host_id === userId)
+  );
 
   // ── Loading skeleton ─────────────────────────────────────────────────────────
   if (isLoading || !event) {
@@ -72,6 +108,17 @@ export default function EventPage() {
 
   return (
     <div className="min-h-screen bg-[var(--bg)] pb-24">
+      {/* ── Realtime New Photos Banner ────────────────────────────────────────── */}
+      <NewPhotosBanner
+        count={newCount}
+        onRefresh={() => {
+          clearNew();
+          refetch();
+          setActiveTab('my');
+        }}
+        onDismiss={clearNew}
+      />
+
       {/* ── Event Header ──────────────────────────────────────────────────────── */}
       <EventHeader
         event={event}
@@ -82,6 +129,16 @@ export default function EventPage() {
         onMomentChange={handleMomentChange}
         canUpload={canUpload}
         onUploadClick={() => setShowUploader(true)}
+        isHost={isHost}
+        onOpenHostTools={() => setShowHostToolsModal(true)}
+        onOpenMoments={() => setShowMomentsModal(true)}
+        onOpenDuplicates={() => setShowDuplicatesModal(true)}
+      />
+
+      {/* ── Most Loved Carousel Row (Phase 2) ─────────────────────────────────── */}
+      <MostLovedRow
+        eventId={eventId}
+        onPhotoClick={(photo) => setLovedLightboxPhoto(photo)}
       />
 
       {/* ── Processing progress bar ───────────────────────────────────────────── */}
@@ -99,7 +156,7 @@ export default function EventPage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`relative flex items-center gap-1.5 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors duration-200 ${
-                activeTab === tab.id ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)] hover:text-[var(--text)]'
+                activeTab === tab.id ? 'text-[var(--accent)] font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text)]'
               }`}
             >
               <span className="text-base">{tab.emoji}</span>
@@ -128,10 +185,22 @@ export default function EventPage() {
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
             {activeTab === 'my' && (
-              <MyPhotos eventId={eventId} userId={userId} activeMoment={activeMoment} />
+              <MyPhotos
+                eventId={eventId}
+                userId={userId}
+                activeMoment={activeMoment}
+                moments={moments}
+                isHost={isHost}
+              />
             )}
             {activeTab === 'all' && (
-              <AllPhotos eventId={eventId} userId={userId} activeMoment={activeMoment} />
+              <AllPhotos
+                eventId={eventId}
+                userId={userId}
+                activeMoment={activeMoment}
+                moments={moments}
+                isHost={isHost}
+              />
             )}
             {activeTab === 'everyone' && (
               <Everyone eventId={eventId} myPersonId={myPerson?.personId} />
@@ -147,7 +216,6 @@ export default function EventPage() {
       <AnimatePresence>
         {showUploader && (
           <>
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -156,7 +224,6 @@ export default function EventPage() {
               onClick={() => setShowUploader(false)}
             />
 
-            {/* Drawer */}
             <motion.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
@@ -164,7 +231,6 @@ export default function EventPage() {
               transition={{ type: 'spring', stiffness: 380, damping: 36 }}
               className="fixed bottom-0 left-0 right-0 z-50 bg-[var(--surface)] rounded-t-3xl shadow-card border-t border-[var(--border)] pb-safe"
             >
-              {/* Handle */}
               <div className="flex justify-center pt-3 pb-1">
                 <div className="w-10 h-1 rounded-full bg-[var(--border)]" />
               </div>
@@ -188,9 +254,13 @@ export default function EventPage() {
                   uploaderName={session?.name ?? 'Guest'}
                   uploadMode={event.upload_mode === 'everyone' ? 'everyone' : 'selected'}
                   memberRole={
-                    members.find(m => m.userId === userId)?.role ?? 'guest'
+                    members.find((m) => m.userId === userId)?.role ?? 'guest'
                   }
-                  moments={moments.map(m => ({ id: m.id as string, event_id: eventId, name: m.name, order_index: 0, created_at: '' }))}
+                  moments={moments.map((m, idx) => ({
+                    id: m.id as string,
+                    name: m.name,
+                    order: idx,
+                  }))}
                   defaultMomentId={activeMoment === 'all' ? undefined : activeMoment}
                 />
               </div>
@@ -198,6 +268,53 @@ export default function EventPage() {
           </>
         )}
       </AnimatePresence>
+
+      {/* ── Phase 2 Modals ───────────────────────────────────────────────────── */}
+      {/* Moments Manager Modal */}
+      <MomentsManagerModal
+        eventId={eventId}
+        hostId={userId}
+        moments={moments}
+        isOpen={showMomentsModal}
+        onClose={() => setShowMomentsModal(false)}
+        onMomentsUpdated={() => refetch()}
+      />
+
+      {/* Duplicate Cleanup Modal */}
+      <DuplicateCleanupModal
+        eventId={eventId}
+        userId={userId}
+        isHost={isHost}
+        isOpen={showDuplicatesModal}
+        onClose={() => setShowDuplicatesModal(false)}
+        onCleanupCompleted={() => refetch()}
+      />
+
+      {/* Host Tools Modal */}
+      <HostToolsModal
+        eventId={eventId}
+        hostId={userId || '00000000-0000-0000-0000-000000000001'}
+        uploadMode={event.upload_mode}
+        requireApproval={event.require_approval}
+        isOpen={showHostToolsModal}
+        onClose={() => setShowHostToolsModal(false)}
+        onEventUpdated={() => refetch()}
+        onOpenMoments={() => setShowMomentsModal(true)}
+        onOpenDuplicates={() => setShowDuplicatesModal(true)}
+      />
+
+      {/* Standalone Lightbox for Most Loved photo clicks */}
+      {lovedLightboxPhoto && (
+        <Lightbox
+          photos={[lovedLightboxPhoto]}
+          initialIndex={0}
+          onClose={() => setLovedLightboxPhoto(null)}
+          onFavorite={() => {}}
+          onReport={() => {}}
+          onHide={() => {}}
+          onDownload={() => {}}
+        />
+      )}
     </div>
   );
 }

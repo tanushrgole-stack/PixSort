@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Heart, X } from 'lucide-react';
+import { Download, Heart, X, Folder, Trash2 } from 'lucide-react';
 import { usePhotos } from '@/hooks/usePhotos';
 import { useFavorite } from '@/hooks/useFavorite';
 import { useMultiSelect } from '@/hooks/useMultiSelect';
@@ -11,7 +11,9 @@ import MasonryGrid from '@/components/event/MasonryGrid';
 import Lightbox from '@/components/event/Lightbox';
 import EmptyState from '@/components/event/EmptyState';
 import ConfettiEffect from '@/components/event/ConfettiEffect';
+import { MomentsManagerModal } from '@/components/event/MomentsManagerModal';
 import { Skeleton } from '@/components/ui';
+import type { MomentTab } from '@/types/event-ui';
 
 type Filter = 'all' | 'solo' | 'group';
 
@@ -19,6 +21,8 @@ interface MyPhotosProps {
   eventId: string;
   userId?: string;
   activeMoment: string | 'all';
+  moments?: MomentTab[];
+  isHost?: boolean;
 }
 
 const FILTER_CHIPS: { label: string; value: Filter }[] = [
@@ -27,13 +31,20 @@ const FILTER_CHIPS: { label: string; value: Filter }[] = [
   { label: 'Group 👥', value: 'group' },
 ];
 
-export default function MyPhotos({ eventId, userId, activeMoment }: MyPhotosProps) {
+export default function MyPhotos({
+  eventId,
+  userId,
+  activeMoment,
+  moments = [],
+  isHost = false,
+}: MyPhotosProps) {
   const [filter, setFilter] = useState<Filter>('all');
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showMoveModal, setShowMoveModal] = useState(false);
   const toast = useToast();
 
-  const { photos, isLoading, hasMore, loadMore } = usePhotos({
+  const { photos, isLoading, hasMore, loadMore, reset } = usePhotos({
     eventId,
     tab: 'my',
     momentId: activeMoment === 'all' ? undefined : activeMoment,
@@ -87,6 +98,24 @@ export default function MyPhotos({ eventId, userId, activeMoment }: MyPhotosProp
     clear();
   }, [selected, photos, toggleFavorite, clear, toast]);
 
+  const handleDeleteSelected = useCallback(async () => {
+    if (selected.size === 0) return;
+    if (!confirm(`Delete ${selected.size} selected photo(s)?`)) return;
+    try {
+      const res = await fetch(`/api/events/${eventId}/photos`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ photo_ids: Array.from(selected), user_id: userId }),
+      });
+      if (!res.ok) throw new Error();
+      toast.success(`Removed ${selected.size} photo(s)`);
+      clear();
+      reset();
+    } catch {
+      toast.error('Could not delete photos');
+    }
+  }, [selected, eventId, userId, clear, reset, toast]);
+
   const albumReady = !isLoading;
 
   return (
@@ -129,7 +158,7 @@ export default function MyPhotos({ eventId, userId, activeMoment }: MyPhotosProp
       {photos.length > 0 && (
         <MasonryGrid
           photos={photos}
-          onPhotoClick={(_, idx) => setLightboxIndex(idx)}
+          onPhotoClick={(idx) => setLightboxIndex(idx)}
           onLongPress={(id) => {
             startSelecting();
             toggle(id);
@@ -165,9 +194,29 @@ export default function MyPhotos({ eventId, userId, activeMoment }: MyPhotosProp
               onClick={handleFavoriteSelected}
               disabled={selected.size === 0}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sunset-rose/40 text-sunset-coral text-xs font-medium disabled:opacity-40 hover:bg-sunset-rose/60 transition"
+              title="Favorite Selected"
             >
               <Heart className="w-3.5 h-3.5" />
             </button>
+            <button
+              onClick={() => setShowMoveModal(true)}
+              disabled={selected.size === 0}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[var(--muted)]/20 text-[var(--text)] text-xs font-medium disabled:opacity-40 hover:bg-[var(--muted)]/30 transition"
+              title="Move to Moment"
+            >
+              <Folder className="w-3.5 h-3.5" />
+              <span>Move</span>
+            </button>
+            {isHost && (
+              <button
+                onClick={handleDeleteSelected}
+                disabled={selected.size === 0}
+                className="p-1.5 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-950 transition"
+                title="Delete Selected"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
             <button
               onClick={clear}
               className="p-1.5 rounded-xl hover:bg-sunset-rose/30 text-sunset-text/50 transition"
@@ -177,6 +226,21 @@ export default function MyPhotos({ eventId, userId, activeMoment }: MyPhotosProp
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Move photos modal */}
+      <MomentsManagerModal
+        eventId={eventId}
+        hostId={userId}
+        moments={moments}
+        isOpen={showMoveModal}
+        onClose={() => setShowMoveModal(false)}
+        onMomentsUpdated={() => {}}
+        movePhotoIds={Array.from(selected)}
+        onPhotosMoved={() => {
+          clear();
+          reset();
+        }}
+      />
 
       {/* Lightbox */}
       {lightboxIndex !== null && (

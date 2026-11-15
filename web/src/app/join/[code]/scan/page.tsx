@@ -108,7 +108,7 @@ export default function ScanPage() {
               Start face scan
             </Button>
             <button
-              onClick={handleEnrollComplete}
+              onClick={() => handleEnrollComplete()}
               className="mt-3 text-sm text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors underline-offset-2 hover:underline"
             >
               Skip for now

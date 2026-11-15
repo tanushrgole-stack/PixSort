@@ -122,3 +122,81 @@ export async function POST(req: NextRequest, { params }: Params) {
   if (error) return apiError(error.message, 500);
   return apiOk({ photo }, 201);
 }
+
+/**
+ * PATCH /api/events/[eventId]/photos
+ * Move photos to a different moment.
+ * Body: { photo_ids: string[], moment_id: string | null, host_id?: string, user_id?: string }
+ */
+export async function PATCH(req: NextRequest, { params }: Params) {
+  const { eventId } = await params;
+  const db = createServerClient();
+
+  let body: { photo_ids?: string[]; moment_id?: string | null; host_id?: string; user_id?: string };
+  try { body = await req.json(); } catch { return apiError("Invalid JSON"); }
+
+  const { photo_ids, moment_id } = body;
+  if (!photo_ids || !Array.isArray(photo_ids) || photo_ids.length === 0) {
+    return apiError("photo_ids array required");
+  }
+
+  const { data, error } = await db
+    .from("photos")
+    .update({ moment_id: moment_id ?? null })
+    .eq("event_id", eventId)
+    .in("id", photo_ids)
+    .select("id, moment_id");
+
+  if (error) return apiError(error.message, 500);
+  return apiOk({ updated: true, photos: data });
+}
+
+/**
+ * DELETE /api/events/[eventId]/photos
+ * Delete photo(s) from the event.
+ * Body: { photo_ids: string[], host_id?: string, user_id?: string }
+ */
+export async function DELETE(req: NextRequest, { params }: Params) {
+  const { eventId } = await params;
+  const db = createServerClient();
+
+  let body: { photo_ids?: string[]; host_id?: string; user_id?: string };
+  try { body = await req.json(); } catch { return apiError("Invalid JSON"); }
+
+  const { photo_ids, host_id, user_id } = body;
+  if (!photo_ids || !Array.isArray(photo_ids) || photo_ids.length === 0) {
+    return apiError("photo_ids array required");
+  }
+
+  const callerId = host_id || user_id;
+  if (callerId) {
+    // Check if caller is host or the one who uploaded
+    const { data: member } = await db
+      .from("event_members")
+      .select("role")
+      .eq("event_id", eventId)
+      .eq("user_id", callerId)
+      .single();
+
+    if (member?.role !== "host") {
+      // Non-host can only delete their own uploads
+      const { error } = await db
+        .from("photos")
+        .delete()
+        .eq("event_id", eventId)
+        .eq("uploaded_by", callerId)
+        .in("id", photo_ids);
+      if (error) return apiError(error.message, 500);
+      return apiOk({ deleted: true });
+    }
+  }
+
+  const { error } = await db
+    .from("photos")
+    .delete()
+    .eq("event_id", eventId)
+    .in("id", photo_ids);
+
+  if (error) return apiError(error.message, 500);
+  return apiOk({ deleted: true });
+}

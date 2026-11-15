@@ -21,6 +21,7 @@ import {
   UserX,
   UserPlus,
   Scan,
+  Trash2,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -41,6 +42,7 @@ interface LightboxProps {
   onReport: (id: string, type: 'not_me' | 'add_me') => void;
   onHide: (id: string) => void;
   onDownload: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 // ─── Slide variants (direction-aware) ────────────────────────────────────────
@@ -98,6 +100,7 @@ export function Lightbox({
   onReport,
   onHide,
   onDownload,
+  onDelete,
 }: LightboxProps) {
   const { success } = useToast();
 
@@ -376,6 +379,21 @@ export function Lightbox({
           <ActionButton label="Hide" onClick={() => onHide(photo.id)}>
             <EyeOff className="w-5 h-5 text-white" />
           </ActionButton>
+
+          {/* Delete (if host) */}
+          {onDelete && (
+            <ActionButton
+              label="Delete"
+              onClick={() => {
+                if (confirm('Delete this photo from the event?')) {
+                  onDelete(photo.id);
+                  onClose();
+                }
+              }}
+            >
+              <Trash2 className="w-5 h-5 text-red-400" />
+            </ActionButton>
+          )}
 
           {/* Face-box toggle */}
           {photo.faces.length > 0 && (

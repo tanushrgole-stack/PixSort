@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowLeft, Share2, Upload } from 'lucide-react';
+import { ArrowLeft, Share2, Upload, Crown, Settings2, FolderPlus, Copy } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { applyEventAccent } from '@/lib/design-tokens';
@@ -47,6 +47,10 @@ interface EventHeaderProps {
   onMomentChange: (id: string) => void;
   canUpload: boolean;
   onUploadClick: () => void;
+  isHost?: boolean;
+  onOpenHostTools?: () => void;
+  onOpenMoments?: () => void;
+  onOpenDuplicates?: () => void;
 }
 
 export function EventHeader({
@@ -58,6 +62,10 @@ export function EventHeader({
   onMomentChange,
   canUpload,
   onUploadClick,
+  isHost = false,
+  onOpenHostTools,
+  onOpenMoments,
+  onOpenDuplicates,
 }: EventHeaderProps) {
   const [copied, setCopied] = useState(false);
 
@@ -121,6 +129,17 @@ export function EventHeader({
           </Link>
 
           <div className="flex items-center gap-2">
+            {/* Host Tools button */}
+            {isHost && (
+              <button
+                onClick={onOpenHostTools}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/80 hover:bg-amber-500 text-white backdrop-blur-md text-xs font-bold transition shadow-sm"
+              >
+                <Crown className="w-3.5 h-3.5" />
+                <span>Host Tools</span>
+              </button>
+            )}
+
             {/* Share button */}
             <button
               onClick={handleShare}
@@ -190,13 +209,24 @@ export function EventHeader({
             : `Sorted ${progress.sorted} of ${progress.total} photos`}
         </p>
 
-        {/* Moment chips */}
-        <div className="-mx-4">
-          <MomentChips
-            moments={moments}
-            active={activeMoment}
-            onChange={onMomentChange}
-          />
+        {/* Moment chips + Quick actions */}
+        <div className="-mx-4 flex items-center justify-between gap-1 pr-2">
+          <div className="flex-1 min-w-0">
+            <MomentChips
+              moments={moments}
+              active={activeMoment}
+              onChange={onMomentChange}
+            />
+          </div>
+          {onOpenMoments && (
+            <button
+              onClick={onOpenMoments}
+              className="p-1.5 rounded-full hover:bg-[var(--muted)]/20 text-[var(--text-secondary)] hover:text-[var(--accent)] transition shrink-0"
+              title="Manage Moments"
+            >
+              <Settings2 className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
 

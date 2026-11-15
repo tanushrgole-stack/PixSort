@@ -10,7 +10,7 @@ import {
 import { Button, Badge } from '@/components/ui';
 import { EVENT_EMOJI, applyEventAccent, EVENT_DEFAULT_MOMENTS } from '@/lib/design-tokens';
 import { useToast } from '@/providers/ToastProvider';
-import { StepBar } from './layout';
+import { StepBar } from '@/components/StepBar';
 
 // ─── Type definitions ─────────────────────────────────────────────────────────
 

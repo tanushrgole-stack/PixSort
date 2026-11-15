@@ -89,13 +89,13 @@ export async function GET(req: NextRequest, { params }: Params) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
   const downloadList = (photos ?? [])
-    .filter((p: { id: string }) => !hiddenSet.has(p.id))
-    .map((p: { id: string; storage_path: string; taken_at: string | null; moments: { name: string } | null }) => ({
-      photo_id: p.id,
-      filename: `${person.name.replace(/\s+/g, "_")}_${p.taken_at?.slice(0, 10) ?? "unknown"}_${p.id.slice(0, 8)}.jpg`,
+    .filter((p: Record<string, unknown>) => !hiddenSet.has(String(p.id)))
+    .map((p: Record<string, unknown>) => ({
+      photo_id: String(p.id),
+      filename: `${person.name.replace(/\s+/g, "_")}_${String(p.taken_at || "").slice(0, 10) || "unknown"}_${String(p.id).slice(0, 8)}.jpg`,
       url: `${supabaseUrl}/storage/v1/object/public/${p.storage_path}`,
-      moment: (p.moments as { name: string } | null)?.name ?? null,
-      taken_at: p.taken_at,
+      moment: (p.moments as { name?: string } | null)?.name ?? null,
+      taken_at: (p.taken_at as string | null) ?? null,
     }));
 
   // Return manifest — client uses this to trigger downloads or a service-worker ZIP
