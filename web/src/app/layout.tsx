@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/providers/ThemeProvider";
+import { ToastProvider } from "@/providers/ToastProvider";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
   display: "swap",
+  axes: ["SOFT", "opsz"],
 });
 
 const inter = Inter({
@@ -15,22 +18,26 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PixSort — AI-Powered Event Photo Sorting",
-  description: "A shared event photo pool with automatic AI face sorting, giving every guest a personalized album of their moments.",
-  icons: {
-    icon: "/favicon.ico",
+  title: "PixSort — Every moment. Every face. Sorted.",
+  description:
+    "Share an event, upload photos, and let AI find every photo you appear in. No account needed.",
+  icons: { icon: "/favicon.ico" },
+  openGraph: {
+    title: "PixSort",
+    description: "AI-powered shared event photo albums",
+    type: "website",
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
-      <body className="bg-sunset-cream dark:bg-sunset-dark-bg text-sunset-text dark:text-sunset-dark-text antialiased selection:bg-sunset-rose selection:text-sunset-text">
-        {children}
+    <html lang="en" className={`${fraunces.variable} ${inter.variable}`} suppressHydrationWarning>
+      <body className="antialiased">
+        <ThemeProvider>
+          <ToastProvider>
+            {children}
+          </ToastProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
