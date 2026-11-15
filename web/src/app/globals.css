@@ -17,9 +17,13 @@
 
   /* Event-type accent (overridden per-event via JS) */
   --accent:        #FF6B4A;
+  --accent-alt:    #FFB703;
   --accent-light:  rgba(255,107,74,0.12);
   --accent-dark:   #E05030;
 
+  /* Text hierarchy */
+  --text-secondary: #7A6457;
+  --font-heading:   var(--font-fraunces, Georgia, serif);
   /* Transition */
   --ease-spring:   cubic-bezier(0.16,1,0.3,1);
   --duration-fast: 150ms;
@@ -38,6 +42,9 @@
   --text:      #FFF1E6;
   --muted:     #C4A99A;
   --border:    #4A3028;
+  --accent-alt:    #FFB703;
+  --text-secondary: #C4A99A;
+  --font-heading:   var(--font-fraunces, Georgia, serif);
 }
 
 /* ─── Base ────────────────────────────────────────────────────────────────── */
@@ -100,11 +107,21 @@ h1,h2,h3,h4,h5,h6 {
 
 /* ─── Gradient text ───────────────────────────────────────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--golden) 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-alt) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* ─── Scrollbar hide utility ──────────────────────────────────────────────── */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* ─── pb-safe (iOS bottom notch) ─────────────────────────────────────────── */
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 12px); }
 
 /* ─── Glass surface ───────────────────────────────────────────────────────── */
 .glass {

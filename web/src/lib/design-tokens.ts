@@ -34,6 +34,16 @@ export function resetAccent(): void {
   root.style.removeProperty("--accent-dark");
 }
 
+export const EVENT_DEFAULT_MOMENTS: Record<string, string[]> = {
+  wedding:   ['Mehndi', 'Haldi', 'Sangeet', 'Wedding Ceremony', 'Reception'],
+  trip:      ['Arrival', 'Day 1', 'Day 2', 'Day 3', 'Departure'],
+  party:     ['Arrivals', 'Games', 'Dance Floor', 'Cake Cutting'],
+  birthday:  ['Arrivals', 'Cake Cutting', 'Gifts', 'Party'],
+  family:    ['Arrival', 'Get-together', 'Meals', 'Farewell'],
+  college:   ['Opening Ceremony', 'Events', 'Performances', 'Closing Night'],
+  corporate: ['Registration', 'Keynote', 'Sessions', 'Networking', 'Team Dinner'],
+};
+
 export const EVENT_EMOJI: Record<string, string> = {
   wedding:   "💍",
   trip:      "✈️",

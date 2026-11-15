@@ -56,6 +56,21 @@ function loadAllSessions(): Record<string, GuestSession> {
   }
 }
 
+/** Returns the most recently saved session (any event) */
+export function getGuestSession(): GuestSession | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const all = loadAllSessions();
+    const sessions = Object.values(all);
+    if (sessions.length === 0) return null;
+    return sessions.sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )[0];
+  } catch {
+    return null;
+  }
+}
+
 export function clearGuestSession(eventId: string): void {
   if (typeof window === "undefined") return;
   const all = loadAllSessions();
