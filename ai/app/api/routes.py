@@ -1,12 +1,15 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File, BackgroundTasks
+from fastapi import APIRouter, HTTPException, UploadFile, File, BackgroundTasks, Form
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Any
 import numpy as np
 import cv2
+import json
 import logging
 
 from app.services.face_detector import face_detector
 from app.services.clustering import cluster_faces_for_event
+from app.services.enrollment import enroll_selfie, confirm_enrollment
+from app.services.liveness import verify_liveness
 
 logger = logging.getLogger("pixsort.ai.routes")
 router = APIRouter(prefix="/api/v1", tags=["AI Processing"])
@@ -49,6 +52,27 @@ class ProgressResponse(BaseModel):
     processing: int
     failed: int
     percent: float
+
+class ConfirmEnrollmentRequest(BaseModel):
+    user_id: str
+    event_id: str
+    person_id: str
+    selfie_embedding: List[float]
+
+class LivenessFrame(BaseModel):
+    yaw: float = 0.0
+    ear: float = 1.0
+
+class LivenessRequest(BaseModel):
+    frames: List[LivenessFrame]
+
+class FaceReportRequest(BaseModel):
+    face_id: str
+    photo_id: str
+    event_id: str
+    reporter_id: str
+    person_id: Optional[str] = None
+    kind: str  # "not_me" | "add_me"
 
 
 # ─────────────────────────────────────────────────────────────
@@ -98,10 +122,6 @@ def cluster_endpoint(req: ClusterRequest):
 
 @router.get("/progress/{event_id}", response_model=ProgressResponse)
 def get_processing_progress(event_id: str):
-    """
-    Returns processing progress counts for an event.
-    Used to display 'Sorted X / Y photos' in the UI.
-    """
     try:
         from app.services.db import get_db
         db = get_db()
@@ -133,6 +153,113 @@ def get_processing_progress(event_id: str):
         failed=counts["failed"],
         percent=percent,
     )
+
+
+# ─────────────────────────────────────────────────────────────
+# POST /liveness/verify — verify liveness frames from browser
+# ─────────────────────────────────────────────────────────────
+
+@router.post("/liveness/verify")
+def liveness_verify(req: LivenessRequest):
+    """
+    Verify a liveness challenge. Called with head-turn / blink frame data
+    captured on the client via the camera. Returns { passed, reason }.
+    """
+    frames = [f.model_dump() for f in req.frames]
+    result = verify_liveness(frames)
+    return result
+
+
+# ─────────────────────────────────────────────────────────────
+# POST /enroll — selfie → embedding → match / candidates
+# ─────────────────────────────────────────────────────────────
+
+@router.post("/enroll")
+async def enroll_endpoint(
+    file: UploadFile = File(...),
+    event_id: str = Form(...),
+    user_id: str = Form(...),
+):
+    """
+    Accept a selfie image and attempt face enrollment.
+    Returns one of:
+      { status: "linked", person_id, similarity }
+      { status: "candidates", candidates: [{person_id, name, similarity, face_thumb}], selfie_embedding }
+      { status: "new_person", person_id }
+      { status: "error", error }
+    The raw selfie image is never persisted — only the embedding is stored.
+    """
+    contents = await file.read()
+    nparr = np.frombuffer(contents, np.uint8)
+    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    if image is None:
+        raise HTTPException(400, detail="Invalid image file")
+
+    result = enroll_selfie(image, event_id, user_id)
+    return result
+
+
+# ─────────────────────────────────────────────────────────────
+# POST /enroll/confirm — user picks a candidate
+# ─────────────────────────────────────────────────────────────
+
+@router.post("/enroll/confirm")
+def confirm_enrollment_endpoint(req: ConfirmEnrollmentRequest):
+    """
+    Called when the user picks their face from the candidate list.
+    Links user_id → person_id and re-runs face matching.
+    """
+    result = confirm_enrollment(
+        req.user_id,
+        req.event_id,
+        req.person_id,
+        req.selfie_embedding,
+    )
+    return result
+
+
+# ─────────────────────────────────────────────────────────────
+# POST /faces/report — "not me" / "add me"
+# ─────────────────────────────────────────────────────────────
+
+@router.post("/faces/report")
+def report_face(req: FaceReportRequest):
+    """
+    Flag a face as 'not_me' (wrong match) or 'add_me' (missed match).
+    For 'not_me': unlinks the face from the person.
+    For 'add_me':  assigns the face to the reporter's person.
+    Records the report in face_reports for host review.
+    """
+    if req.kind not in ("not_me", "add_me"):
+        raise HTTPException(400, detail="kind must be 'not_me' or 'add_me'")
+
+    try:
+        from app.services.db import get_db
+        db = get_db()
+    except RuntimeError:
+        raise HTTPException(503, detail="Database not configured")
+
+    # Record the report
+    db.table("face_reports").insert({
+        "face_id":     req.face_id,
+        "photo_id":    req.photo_id,
+        "event_id":    req.event_id,
+        "reporter_id": req.reporter_id,
+        "person_id":   req.person_id,
+        "kind":        req.kind,
+    }).execute()
+
+    if req.kind == "not_me":
+        # Remove wrong person assignment
+        db.table("faces").update({"person_id": None}).eq("id", req.face_id).execute()
+        return {"updated": True, "action": "face_unlinked"}
+
+    elif req.kind == "add_me":
+        # Find the reporter's person record for this event
+        if not req.person_id:
+            raise HTTPException(400, detail="person_id required for add_me")
+        db.table("faces").update({"person_id": req.person_id}).eq("id", req.face_id).execute()
+        return {"updated": True, "action": "face_assigned"}
 
 
 # ─────────────────────────────────────────────────────────────

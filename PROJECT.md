@@ -40,11 +40,16 @@ Host creates an event (type: wedding/trip/party/birthday/family/college/corporat
 - **Phase 1: MVP**
   - Events management & event types
   - Join via link/QR (name only, no auth required)
+  - Guest sessions: access persisted in browser localStorage + "continue on another device" resume link (token-based)
   - Photo uploading (upload modes)
   - Face sorting & background embedding pipeline
-  - Selfie scan with simple liveness check
-  - Personal album (solo + group photos)
-  - ZIP album download
+  - Selfie scan with simple liveness check (head-turn / blink frames verified server-side)
+  - Face enrollment: auto-link (high confidence), candidate picker (medium), new person (low)
+  - Re-match enrolled users automatically when new photos finish processing
+  - Personal album (solo + group photos), filterable by moment (e.g. only Sangeet photos of me), paginated
+  - "Not me" report to remove wrong matches; "Add me" to claim a missed face
+  - ZIP download (URL manifest): all photos of me in original quality
+  - People list with face thumbnails and photo counts
 - **Phase 2**
   - Moments (sub-albums)
   - All Photos view
