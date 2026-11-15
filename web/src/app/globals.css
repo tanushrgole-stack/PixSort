@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #FFF7F0;
+  --surface: #FFFFFF;
+  --primary: #FF6B4A;
+  --accent: #FFB703;
+  --rose: #FFD9CC;
+  --text: #2B2118;
+}
+
+.dark {
+  --background: #1F1612;
+  --surface: #2B1F19;
+  --primary: #FF6B4A;
+  --accent: #FFB703;
+  --rose: #FFD9CC;
+  --text: #FFF1E6;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text);
+  font-family: var(--font-inter), sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-fraunces), serif;
+}
