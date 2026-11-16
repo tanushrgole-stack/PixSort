@@ -22,7 +22,9 @@ import {
   UserPlus,
   Scan,
   Trash2,
+  MessageCircle,
 } from 'lucide-react';
+import PhotoComments from '@/components/event/PhotoComments';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useToast } from '@/providers/ToastProvider';
@@ -43,6 +45,9 @@ interface LightboxProps {
   onHide: (id: string) => void;
   onDownload: (id: string) => void;
   onDelete?: (id: string) => void;
+  eventId?: string;
+  userId?: string | null;
+  userName?: string;
 }
 
 // ─── Slide variants (direction-aware) ────────────────────────────────────────
@@ -101,6 +106,9 @@ export function Lightbox({
   onHide,
   onDownload,
   onDelete,
+  eventId,
+  userId,
+  userName,
 }: LightboxProps) {
   const { success } = useToast();
 
@@ -108,6 +116,7 @@ export function Lightbox({
   const [direction, setDirection] = useState(0);
   const [showFaces, setShowFaces] = useState(false);
   const [scale, setScale] = useState(1);
+  const [showComments, setShowComments] = useState(false);
 
   // Touch swipe state
   const touchStartX = useRef<number | null>(null);
@@ -410,8 +419,33 @@ export function Lightbox({
               />
             </ActionButton>
           )}
+
+          {/* Comments */}
+          {eventId && (
+            <ActionButton
+              label="Comments"
+              onClick={() => setShowComments((v) => !v)}
+              active={showComments}
+            >
+              <MessageCircle
+                className={cn('w-5 h-5', showComments ? 'text-blue-300' : 'text-white')}
+              />
+            </ActionButton>
+          )}
         </div>
       </motion.div>
+
+      {/* Comments panel */}
+      {eventId && (
+        <PhotoComments
+          eventId={eventId}
+          photoId={photo.id}
+          userId={userId}
+          userName={userName}
+          isOpen={showComments}
+          onClose={() => setShowComments(false)}
+        />
+      )}
     </AnimatePresence>
   );
 }

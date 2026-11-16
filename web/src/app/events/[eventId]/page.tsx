@@ -12,6 +12,9 @@ import { NewPhotosBanner } from '@/components/event/NewPhotosBanner';
 import { MomentsManagerModal } from '@/components/event/MomentsManagerModal';
 import { DuplicateCleanupModal } from '@/components/event/DuplicateCleanupModal';
 import { HostToolsModal } from '@/components/event/HostToolsModal';
+import PrivacySettingsModal from '@/components/event/PrivacySettingsModal';
+import ShareAlbumModal from '@/components/event/ShareAlbumModal';
+import HighlightSlideshow from '@/components/event/HighlightSlideshow';
 import Lightbox from '@/components/event/Lightbox';
 import { Skeleton } from '@/components/ui';
 import PhotoUploader from '@/components/PhotoUploader';
@@ -23,14 +26,18 @@ const MyPhotos = lazy(() => import('@/components/event/tabs/MyPhotos'));
 const AllPhotos = lazy(() => import('@/components/event/tabs/AllPhotos'));
 const Everyone = lazy(() => import('@/components/event/tabs/Everyone'));
 const Favorites = lazy(() => import('@/components/event/tabs/Favorites'));
+const TopPicksTab = lazy(() => import('@/components/event/TopPicksTab'));
+const TimelineView = lazy(() => import('@/components/event/TimelineView'));
 
-type TabId = 'my' | 'all' | 'everyone' | 'favorites';
+type TabId = 'my' | 'all' | 'everyone' | 'favorites' | 'top-picks' | 'timeline';
 
 const TABS: { id: TabId; label: string; emoji: string }[] = [
   { id: 'my',        label: 'My Photos',  emoji: '🤳' },
   { id: 'all',       label: 'All Photos', emoji: '📸' },
   { id: 'everyone',  label: 'Everyone',   emoji: '👥' },
   { id: 'favorites', label: 'Favorites',  emoji: '♥' },
+  { id: 'top-picks', label: 'Top Picks',  emoji: '✨' },
+  { id: 'timeline',  label: 'Timeline',   emoji: '🕰️' },
 ];
 
 function TabSkeleton() {
@@ -67,6 +74,11 @@ export default function EventPage() {
   const [showDuplicatesModal, setShowDuplicatesModal] = useState(false);
   const [showHostToolsModal, setShowHostToolsModal] = useState(false);
   const [lovedLightboxPhoto, setLovedLightboxPhoto] = useState<PhotoItem | null>(null);
+
+  // Phase 3 state
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [showHighlight, setShowHighlight] = useState(false);
 
   const session = getGuestSession();
   const userId = session?.userId;
@@ -208,9 +220,58 @@ export default function EventPage() {
             {activeTab === 'favorites' && (
               <Favorites eventId={eventId} userId={userId} activeMoment={activeMoment} />
             )}
+            {activeTab === ('top-picks' as TabId) && (
+              <TopPicksTab eventId={eventId} personId={myPerson?.personId} userId={userId} />
+            )}
+            {activeTab === ('timeline' as TabId) && (
+              <TimelineView eventId={eventId} userId={userId} />
+            )}
           </motion.div>
         </AnimatePresence>
       </Suspense>
+
+      {/* ── Phase 3: quick access bar ──────────────────────────────────────────── */}
+      <div className="flex gap-2 px-4 py-3 overflow-x-auto scrollbar-hide">
+        <button
+          onClick={() => setShowHighlight(true)}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold text-white whitespace-nowrap hover:scale-105 transition-transform"
+          style={{ background: 'linear-gradient(135deg, #FF6B4A, #FFB347)' }}
+        >
+          🎞️ Highlight Reel
+        </button>
+        {userId && (
+          <button
+            onClick={() => setShowShareModal(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold whitespace-nowrap border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--muted)]/30 transition-colors text-[var(--text)]"
+          >
+            🔗 Share My Album
+          </button>
+        )}
+        <button
+          onClick={() => setActiveTab('top-picks')}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold whitespace-nowrap border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--muted)]/30 transition-colors text-[var(--text)]"
+        >
+          ✨ Top Picks
+        </button>
+        <button
+          onClick={() => setActiveTab('timeline')}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold whitespace-nowrap border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--muted)]/30 transition-colors text-[var(--text)]"
+        >
+          🕰️ Timeline
+        </button>
+        <a
+          href={`/events/${eventId}/photographer`}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold whitespace-nowrap border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--muted)]/30 transition-colors text-[var(--text)]"
+        >
+          📷 Photographer
+        </a>
+        <button
+          onClick={() => setShowPrivacyModal(true)}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold whitespace-nowrap border border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--muted)]/30 transition-colors text-[var(--text)]"
+        >
+          🔒 Privacy
+        </button>
+      </div>
 
       {/* ── Upload drawer ─────────────────────────────────────────────────────── */}
       <AnimatePresence>
@@ -313,6 +374,32 @@ export default function EventPage() {
           onReport={() => {}}
           onHide={() => {}}
           onDownload={() => {}}
+          eventId={eventId}
+          userId={userId}
+        />
+      )}
+
+      {/* ── Phase 3 Modals ───────────────────────────────────────────────────── */}
+      <PrivacySettingsModal
+        isOpen={showPrivacyModal}
+        onClose={() => setShowPrivacyModal(false)}
+        userId={userId ?? ''}
+        eventId={eventId}
+      />
+
+      {userId && (
+        <ShareAlbumModal
+          isOpen={showShareModal}
+          onClose={() => setShowShareModal(false)}
+          eventId={eventId}
+          userId={userId}
+        />
+      )}
+
+      {showHighlight && (
+        <HighlightSlideshow
+          eventId={eventId}
+          onClose={() => setShowHighlight(false)}
         />
       )}
     </div>
