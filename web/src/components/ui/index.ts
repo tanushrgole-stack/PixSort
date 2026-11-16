@@ -8,3 +8,4 @@ export { ThemeToggle } from './ThemeToggle';
 export { PageTransition } from './PageTransition';
 export { OfflineBanner } from './OfflineBanner';
 export { ErrorBoundary } from './ErrorBoundary';
+export { Logo, LogoIcon } from './Logo';

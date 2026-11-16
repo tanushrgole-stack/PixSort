@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { ArrowRight, Sparkles, QrCode, Upload, Smile } from 'lucide-react';
-import { Button, ThemeToggle } from '@/components/ui';
+import { Button, ThemeToggle, Logo } from '@/components/ui';
 import { EVENT_EMOJI } from '@/lib/design-tokens';
 
 // ─── Floating Polaroid Card ──────────────────────────────────────────────────
@@ -124,13 +124,8 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 bg-[var(--bg)]/80 backdrop-blur-md border-b border-[var(--border)]">
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-alt)] flex items-center justify-center shadow-soft">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-bold text-lg" style={{ fontFamily: 'var(--font-heading)' }}>
-              Pix<span className="text-[var(--accent)]">Sort</span>
-            </span>
+          <Link href="/" className="flex items-center group transition-transform hover:scale-[1.02]">
+            <Logo size={32} />
           </Link>
 
           {/* Right actions */}
@@ -350,10 +345,12 @@ export default function LandingPage() {
       {/* ── Footer ── */}
       <footer className="border-t border-[var(--border)] py-8">
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[var(--text-secondary)]">
-          <span>© 2025 PixSort · AI face sorting for real moments</span>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-[var(--accent)] transition-colors">Privacy</a>
-            <a href="#" className="hover:text-[var(--accent)] transition-colors">Terms</a>
+          <div className="flex items-center gap-2">
+            <Logo size={24} />
+            <span className="text-xs">© 2026 Pixsort · AI face sorting for real moments</span>
+          </div>
+          <div className="flex gap-6 text-sm">
+            <Link href="/privacy" className="hover:text-[var(--accent)] transition-colors">Privacy</Link>
             <a href="https://github.com/tanushrgole-stack/PixSort" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--accent)] transition-colors">GitHub</a>
           </div>
         </div>

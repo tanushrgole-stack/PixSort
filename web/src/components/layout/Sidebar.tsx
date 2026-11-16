@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Home, Camera, Image, User, Sparkles } from 'lucide-react';
 import { clsx } from 'clsx';
-import { ThemeToggle } from '@/components/ui';
+import { ThemeToggle, Logo } from '@/components/ui';
 
 const NAV_ITEMS = [
   { href: '/', icon: Home, label: 'Home' },
@@ -20,13 +20,8 @@ export function Sidebar() {
   return (
     <aside className="hidden md:flex flex-col w-60 h-screen sticky top-0 bg-[var(--surface)] border-r border-[var(--border)] px-4 py-6 shrink-0">
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-2.5 mb-8 group">
-        <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-alt)] flex items-center justify-center shadow-soft">
-          <Sparkles className="w-5 h-5 text-white" />
-        </div>
-        <span className="font-bold text-xl tracking-tight text-[var(--text)]" style={{ fontFamily: 'var(--font-heading)' }}>
-          Pix<span className="text-[var(--accent)]">Sort</span>
-        </span>
+      <Link href="/" className="flex items-center mb-8 group transition-transform hover:scale-[1.02]">
+        <Logo size={34} />
       </Link>
 
       {/* Nav items */}

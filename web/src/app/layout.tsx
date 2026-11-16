@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   description:
     "Share an event, upload photos, and let AI find every photo you appear in. No account needed.",
   manifest: "/manifest.json",
-  icons: { icon: "/favicon.ico", apple: "/icon-192.png" },
+  icons: { icon: "/favicon.svg", apple: "/logo.svg" },
   openGraph: {
     title: "PixSort",
     description: "AI-powered shared event photo albums",
