@@ -16,6 +16,7 @@ interface UsePhotosResult {
   total: number;
   hasMore: boolean;
   isLoading: boolean;
+  error: string | null;
   loadMore: () => void;
   reset: () => void;
 }
@@ -64,13 +65,17 @@ export function usePhotos({ eventId, tab, momentId, filter, pageSize = 30 }: Use
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const mountedRef = useRef(true);
   const loadingRef = useRef(false);
 
   const fetchPage = useCallback(async (pageNum: number, replace = false) => {
     if (loadingRef.current) return;
     loadingRef.current = true;
-    if (mountedRef.current) setIsLoading(true);
+    if (mountedRef.current) {
+      setIsLoading(true);
+      setError(null);
+    }
     try {
       const params = new URLSearchParams({ page: String(pageNum), pageSize: String(pageSize) });
       if (momentId && momentId !== 'all') params.set('moment', momentId);
@@ -79,7 +84,10 @@ export function usePhotos({ eventId, tab, momentId, filter, pageSize = 30 }: Use
         ? `/api/events/${eventId}/album?${params}`
         : `/api/events/${eventId}/all-photos?${params}`;
       const res = await fetch(url);
-      if (!res.ok || !mountedRef.current) return;
+      if (!res.ok) {
+        throw new Error(`Failed to load photos (${res.status})`);
+      }
+      if (!mountedRef.current) return;
       const data = await res.json();
       const raw: Array<Record<string, unknown>> = data.photos ?? data.items ?? (Array.isArray(data) ? data : []);
       const newPhotos = raw.map(mapToPhotoItem);
@@ -88,8 +96,10 @@ export function usePhotos({ eventId, tab, momentId, filter, pageSize = 30 }: Use
       setTotal(dataTotal);
       setPhotos(prev => replace ? newPhotos : [...prev, ...newPhotos]);
       setHasMore(newPhotos.length === pageSize);
-    } catch {
-      // silent
+    } catch (err) {
+      if (mountedRef.current) {
+        setError(err instanceof Error ? err.message : 'Failed to load photos');
+      }
     } finally {
       loadingRef.current = false;
       if (mountedRef.current) setIsLoading(false);
@@ -116,5 +126,5 @@ export function usePhotos({ eventId, tab, momentId, filter, pageSize = 30 }: Use
     setPhotos([]); setPage(1); setHasMore(true); fetchPage(1, true);
   }, [fetchPage]);
 
-  return { photos, total, hasMore, isLoading, loadMore, reset };
+  return { photos, total, hasMore, isLoading, error, loadMore, reset };
 }

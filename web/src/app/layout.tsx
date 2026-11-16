@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { ToastProvider } from "@/providers/ToastProvider";
+import { OfflineBanner } from "@/components/ui/OfflineBanner";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -21,21 +22,48 @@ export const metadata: Metadata = {
   title: "PixSort — Every moment. Every face. Sorted.",
   description:
     "Share an event, upload photos, and let AI find every photo you appear in. No account needed.",
-  icons: { icon: "/favicon.ico" },
+  manifest: "/manifest.json",
+  icons: { icon: "/favicon.ico", apple: "/icon-192.png" },
   openGraph: {
     title: "PixSort",
     description: "AI-powered shared event photo albums",
     type: "website",
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "PixSort",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#FF6B4A",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${inter.variable}`} suppressHydrationWarning>
       <body className="antialiased">
+        {/* Skip-to-content for keyboard / screen reader users */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:rounded-xl focus:font-semibold focus:text-white"
+          style={{ background: '#FF6B4A' }}
+        >
+          Skip to content
+        </a>
+
+        <OfflineBanner />
+
         <ThemeProvider>
           <ToastProvider>
-            {children}
+            <main id="main-content">
+              {children}
+            </main>
           </ToastProvider>
         </ThemeProvider>
       </body>

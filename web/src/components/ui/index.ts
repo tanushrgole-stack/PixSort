@@ -6,3 +6,5 @@ export { Skeleton, SkeletonCard, SkeletonPhoto } from './Skeleton';
 export { Badge } from './Badge';
 export { ThemeToggle } from './ThemeToggle';
 export { PageTransition } from './PageTransition';
+export { OfflineBanner } from './OfflineBanner';
+export { ErrorBoundary } from './ErrorBoundary';

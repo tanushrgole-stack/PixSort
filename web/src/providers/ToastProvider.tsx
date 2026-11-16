@@ -20,26 +20,26 @@ interface ToastCtx {
   toast: (message: string, kind?: ToastKind, duration?: number) => void;
   addToast: (options: { kind?: ToastKind; message: string; duration?: number }) => void;
   success: (msg: string) => void;
-  error:   (msg: string) => void;
-  info:    (msg: string) => void;
+  error: (msg: string) => void;
+  info: (msg: string) => void;
 }
 
 const Ctx = createContext<ToastCtx>({
-  toast: () => {}, addToast: () => {}, success: () => {}, error: () => {}, info: () => {},
+  toast: () => { }, addToast: () => { }, success: () => { }, error: () => { }, info: () => { },
 });
 
 const ICONS: Record<ToastKind, ReactNode> = {
   success: <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />,
-  error:   <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />,
+  error: <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />,
   warning: <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />,
-  info:    <Info className="w-4 h-4 text-blue-500 shrink-0" />,
+  info: <Info className="w-4 h-4 text-blue-500 shrink-0" />,
 };
 
 const BG: Record<ToastKind, string> = {
   success: "bg-white dark:bg-sunset-dark-surface border-emerald-200 dark:border-emerald-900",
-  error:   "bg-white dark:bg-sunset-dark-surface border-red-200 dark:border-red-900",
+  error: "bg-white dark:bg-sunset-dark-surface border-red-200 dark:border-red-900",
   warning: "bg-white dark:bg-sunset-dark-surface border-amber-200 dark:border-amber-900",
-  info:    "bg-white dark:bg-sunset-dark-surface border-sunset-border dark:border-sunset-dark-border",
+  info: "bg-white dark:bg-sunset-dark-surface border-sunset-border dark:border-sunset-dark-border",
 };
 
 function ToastItem({ t, onDismiss }: { t: Toast; onDismiss: (id: string) => void }) {
@@ -52,8 +52,8 @@ function ToastItem({ t, onDismiss }: { t: Toast; onDismiss: (id: string) => void
     <motion.div
       layout
       initial={{ opacity: 0, y: 32, scale: 0.92 }}
-      animate={{ opacity: 1, y: 0,  scale: 1 }}
-      exit={{   opacity: 0, y: -16, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -16, scale: 0.95 }}
       transition={{ type: "spring", stiffness: 420, damping: 32 }}
       className={`toast border ${BG[t.kind]}`}
       role="alert"
@@ -86,11 +86,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const ctx: ToastCtx = {
-    toast:   add,
+    toast: add,
     addToast: ({ message, kind, duration }) => add(message, kind, duration),
     success: (m) => add(m, "success"),
-    error:   (m) => add(m, "error"),
-    info:    (m) => add(m, "info"),
+    error: (m) => add(m, "error"),
+    info: (m) => add(m, "info"),
   };
 
   return (

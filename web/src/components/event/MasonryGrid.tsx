@@ -114,14 +114,19 @@ function PhotoCard({
         {/* Thumbnail image */}
         <img
           src={photo.thumbUrl}
-          alt={photo.momentName ?? `Photo ${idx + 1}`}
+          alt={[
+            photo.uploaderName && `Uploaded by ${photo.uploaderName}`,
+            photo.momentName && `in ${photo.momentName}`,
+            `Photo ${idx + 1}`,
+          ].filter(Boolean).join(' · ')}
           loading="lazy"
           decoding="async"
+          sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 20vw"
           onLoad={() => setLoaded(true)}
           className={cn(
             'absolute inset-0 w-full h-full object-cover',
-            'transition-[filter] duration-500',
-            loaded ? 'blur-0' : 'blur-sm scale-105',
+            'transition-[filter,opacity] duration-500',
+            loaded ? 'blur-0 opacity-100' : 'blur-sm opacity-80 scale-[1.03]',
           )}
           draggable={false}
         />

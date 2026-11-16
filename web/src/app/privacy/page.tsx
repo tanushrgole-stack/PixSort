@@ -196,6 +196,24 @@ export default function PrivacyPage() {
         >
           ← Back to PixSort
         </Link>
+
+        {/* Self-service data deletion note */}
+        <section className="p-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] text-sm text-[var(--text-secondary)] space-y-2">
+          <p className="font-semibold text-[var(--text)]">🗑️ Delete your data right now</p>
+          <p>
+            You don&apos;t need to email us. Open <strong>any event</strong> you joined → tap the{' '}
+            <span className="font-mono bg-[var(--muted)]/30 px-1 rounded">🔒 Privacy</span> pill in the
+            quick-access bar → tap <strong>&quot;Delete All My Face Data&quot;</strong>. Your face
+            embeddings are removed immediately from every event.
+          </p>
+          <p>
+            For complete account deletion or a copy of all data you&apos;ve uploaded, email{' '}
+            <a href="mailto:privacy@pixsort.app" className="text-[var(--accent)] hover:underline">
+              privacy@pixsort.app
+            </a>
+            . We respond within 72 hours as required by DPDP 2023.
+          </p>
+        </section>
       </div>
     </div>
   );

@@ -62,6 +62,7 @@ export default function EventPage() {
     myPerson,
     canUpload,
     isLoading,
+    error,
     refetch,
   } = useEventData(eventId);
 
@@ -100,10 +101,30 @@ export default function EventPage() {
       (event && (event as { host_id?: string }).host_id === userId)
   );
 
+  // ── Error state ──────────────────────────────────────────────────────────────
+  if (error && !isLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--bg)] flex flex-col items-center justify-center gap-4 p-6 text-center">
+        <span className="text-5xl" role="img" aria-label="error">😕</span>
+        <p className="text-lg font-bold text-[var(--text)]" style={{ fontFamily: 'var(--font-heading)' }}>
+          Couldn&apos;t load this event
+        </p>
+        <p className="text-sm text-[var(--text-secondary)] max-w-xs">{error}</p>
+        <button
+          onClick={() => refetch()}
+          className="px-5 py-2.5 rounded-2xl text-sm font-semibold text-white"
+          style={{ background: 'var(--accent)' }}
+        >
+          Try again
+        </button>
+      </div>
+    );
+  }
+
   // ── Loading skeleton ─────────────────────────────────────────────────────────
   if (isLoading || !event) {
     return (
-      <div className="min-h-screen bg-[var(--bg)]">
+      <div className="min-h-screen bg-[var(--bg)]" aria-label="Loading event" aria-busy="true">
         <Skeleton className="w-full h-52 rounded-none" />
         <div className="p-4 space-y-4">
           <Skeleton className="h-6 w-48 rounded-xl" />
