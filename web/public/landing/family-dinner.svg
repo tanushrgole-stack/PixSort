@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="fdroom" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2B1A10"/>
+      <stop offset="100%" stop-color="#1A0F08"/>
+    </linearGradient>
+    <linearGradient id="fdwall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3D2515"/>
+      <stop offset="100%" stop-color="#2B1810"/>
+    </linearGradient>
+    <radialGradient id="fdlight" cx="50%" cy="10%" r="50%">
+      <stop offset="0%" stop-color="#FFD580" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+    <linearGradient id="fdtable" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8B6914"/>
+      <stop offset="100%" stop-color="#5D4514"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Room background -->
+  <rect width="400" height="300" fill="url(#fdwall)"/>
+  <rect width="400" height="300" fill="url(#fdlight)"/>
+  <!-- Floor -->
+  <rect x="0" y="230" width="400" height="70" fill="#1A0F08"/>
+  <!-- Floor lines -->
+  <line x1="0" y1="250" x2="400" y2="250" stroke="#2B1A10" stroke-width="1" opacity="0.6"/>
+  <line x1="0" y1="265" x2="400" y2="265" stroke="#2B1A10" stroke-width="1" opacity="0.6"/>
+  <line x1="100" y1="230" x2="80" y2="300" stroke="#2B1A10" stroke-width="1" opacity="0.4"/>
+  <line x1="200" y1="230" x2="200" y2="300" stroke="#2B1A10" stroke-width="1" opacity="0.4"/>
+  <line x1="300" y1="230" x2="320" y2="300" stroke="#2B1A10" stroke-width="1" opacity="0.4"/>
+
+  <!-- Window -->
+  <rect x="280" y="40" width="90" height="120" rx="5" fill="#87CEEB" opacity="0.3"/>
+  <rect x="280" y="40" width="90" height="120" rx="5" fill="none" stroke="#8B6914" stroke-width="4"/>
+  <line x1="325" y1="40" x2="325" y2="160" stroke="#8B6914" stroke-width="2"/>
+  <line x1="280" y1="100" x2="370" y2="100" stroke="#8B6914" stroke-width="2"/>
+  <!-- Night scene through window -->
+  <circle cx="310" cy="65" r="8" fill="#FFE066" opacity="0.6"/>
+  <circle cx="348" cy="58" r="4" fill="white" opacity="0.5"/>
+  <circle cx="295" cy="80" r="3" fill="white" opacity="0.4"/>
+  <!-- Curtains -->
+  <path d="M280,40 Q270,80 275,160" fill="#8B4A14" opacity="0.6"/>
+  <path d="M370,40 Q380,80 375,160" fill="#8B4A14" opacity="0.6"/>
+
+  <!-- Chandelier / light fixture -->
+  <line x1="200" y1="0" x2="200" y2="30" stroke="#8B6914" stroke-width="3"/>
+  <ellipse cx="200" cy="32" rx="20" ry="8" fill="#8B6914"/>
+  <!-- candle arms -->
+  <path d="M180,32 Q170,42 165,38" stroke="#8B6914" stroke-width="2.5" fill="none"/>
+  <path d="M220,32 Q230,42 235,38" stroke="#8B6914" stroke-width="2.5" fill="none"/>
+  <path d="M200,32 L200,48" stroke="#8B6914" stroke-width="2.5" fill="none"/>
+  <!-- Bulbs -->
+  <circle cx="165" cy="37" r="6" fill="#FFE066" opacity="0.9"/>
+  <circle cx="235" cy="37" r="6" fill="#FFE066" opacity="0.9"/>
+  <circle cx="200" cy="49" r="6" fill="#FFE066" opacity="0.9"/>
+  <!-- Glow -->
+  <circle cx="165" cy="37" r="14" fill="#FFE066" opacity="0.15"/>
+  <circle cx="235" cy="37" r="14" fill="#FFE066" opacity="0.15"/>
+
+  <!-- Dining table -->
+  <ellipse cx="200" cy="225" rx="150" ry="22" fill="url(#fdtable)"/>
+  <ellipse cx="200" cy="221" rx="150" ry="20" fill="#A07820"/>
+  <!-- Table cloth edge highlight -->
+  <path d="M50,221 Q200,208 350,221" stroke="#FFD580" stroke-width="1.5" fill="none" opacity="0.4"/>
+  <!-- Table legs -->
+  <rect x="80" y="237" width="12" height="40" rx="2" fill="#5D4514"/>
+  <rect x="308" y="237" width="12" height="40" rx="2" fill="#5D4514"/>
+
+  <!-- Candles on table -->
+  <rect x="190" y="193" width="6" height="28" rx="2" fill="#FFF8F5"/>
+  <ellipse cx="193" cy="192" rx="5" ry="7" fill="#FFE066"/>
+  <ellipse cx="193" cy="192" rx="2.5" ry="4" fill="#FF6B4A"/>
+  <rect x="203" y="196" width="5" height="25" rx="2" fill="#FFD9CC"/>
+  <ellipse cx="205" cy="195" rx="4" ry="6" fill="#FFE066"/>
+  <ellipse cx="205" cy="195" rx="2" ry="3.5" fill="#FF6B4A"/>
+
+  <!-- Plates and food -->
+  <ellipse cx="130" cy="220" rx="22" ry="8" fill="#E8D5B8"/>
+  <circle cx="130" cy="218" r="16" fill="#D4B896"/>
+  <circle cx="130" cy="218" r="10" fill="#8B6914" opacity="0.4"/>
+  <ellipse cx="200" cy="220" rx="22" ry="8" fill="#E8D5B8"/>
+  <circle cx="200" cy="218" r="16" fill="#D4B896"/>
+  <ellipse cx="270" cy="220" rx="22" ry="8" fill="#E8D5B8"/>
+  <circle cx="270" cy="218" r="16" fill="#D4B896"/>
+
+  <!-- Wine glasses -->
+  <path d="M155,205 Q155,215 160,220 Q165,215 165,205 Q163,197 160,196 Q157,197 155,205 Z" fill="#87CEEB" opacity="0.5"/>
+  <line x1="160" y1="220" x2="160" y2="230" stroke="#888" stroke-width="1.5"/>
+  <line x1="155" y1="230" x2="165" y2="230" stroke="#888" stroke-width="1.5"/>
+  <path d="M235,205 Q235,215 240,220 Q245,215 245,205 Q243,197 240,196 Q237,197 235,205 Z" fill="#C41A1A" opacity="0.5"/>
+  <line x1="240" y1="220" x2="240" y2="230" stroke="#888" stroke-width="1.5"/>
+  <line x1="235" y1="230" x2="245" y2="230" stroke="#888" stroke-width="1.5"/>
+
+  <!-- Family members (seated, visible from above waist) -->
+  <!-- Father (left) -->
+  <ellipse cx="95" cy="193" rx="13" ry="13" fill="#8B5E3C"/>
+  <path d="M83,205 Q95,201 107,205 L107,230 Q95,232 83,230 Z" fill="#2B2118"/>
+  <!-- tie -->
+  <path d="M92,207 L95,207 L98,207 L96.5,220 L95,222 L93.5,220 Z" fill="#FF6B4A"/>
+
+  <!-- Mother (left-center) -->
+  <ellipse cx="148" cy="192" rx="12" ry="12" fill="#C4845A"/>
+  <path d="M137,203 Q148,199 159,203 L159,228 Q148,231 137,228 Z" fill="#A855F7"/>
+  <!-- hair bun -->
+  <circle cx="148" cy="181" r="8" fill="#2B1A10"/>
+
+  <!-- Child (center) -->
+  <ellipse cx="200" cy="195" rx="10" ry="10" fill="#8B5E3C"/>
+  <path d="M191,204 Q200,201 209,204 L209,228 Q200,230 191,228 Z" fill="#FFB703"/>
+
+  <!-- Grandma (right-center) -->
+  <ellipse cx="253" cy="192" rx="12" ry="12" fill="#C4A99A"/>
+  <path d="M242,203 Q253,199 264,203 L264,228 Q253,231 242,228 Z" fill="#87CEEB"/>
+  <!-- grey bun -->
+  <circle cx="253" cy="181" r="8" fill="#C4A99A"/>
+
+  <!-- Uncle (right) -->
+  <ellipse cx="308" cy="193" rx="13" ry="13" fill="#3D2015"/>
+  <path d="M296,205 Q308,201 320,205 L320,230 Q308,232 296,230 Z" fill="#2B4A1A"/>
+
+  <!-- Laughter / speech -->
+  <circle cx="145" cy="175" r="12" fill="#FFE8DC" opacity="0.7"/>
+  <text x="140" y="181" font-size="10" fill="#FF6B4A">😄</text>
+
+  <!-- Bowl of food center of table -->
+  <ellipse cx="200" cy="208" rx="18" ry="7" fill="#C4845A"/>
+  <ellipse cx="200" cy="205" rx="18" ry="7" fill="#8B6914"/>
+  <ellipse cx="200" cy="202" rx="14" ry="5" fill="#D4A84B"/>
+</svg>

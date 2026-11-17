@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF9A6C"/>
+      <stop offset="60%" stop-color="#FFD580"/>
+      <stop offset="100%" stop-color="#FFF1CC"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4A7C4E"/>
+      <stop offset="100%" stop-color="#2D5A30"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="70%" cy="25%" r="15%">
+      <stop offset="0%" stop-color="#FFE066" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#FFD580" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="dress" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF8F5"/>
+      <stop offset="100%" stop-color="#FFE8DC"/>
+    </linearGradient>
+    <linearGradient id="suit" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2B2118"/>
+      <stop offset="100%" stop-color="#3D2F25"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky background -->
+  <rect width="400" height="300" fill="url(#sky)"/>
+  <!-- Sun glow -->
+  <circle cx="280" cy="75" r="60" fill="url(#sun)"/>
+  <!-- Ground -->
+  <rect x="0" y="210" width="400" height="90" fill="url(#ground)"/>
+
+  <!-- Arch structure -->
+  <path d="M120,210 L120,100 Q200,30 280,100 L280,210" fill="none" stroke="#8B6914" stroke-width="8" stroke-linecap="round"/>
+  <!-- Arch flowers -->
+  <circle cx="120" cy="100" r="12" fill="#FF6B4A" opacity="0.85"/>
+  <circle cx="200" cy="38" r="14" fill="#FFB703" opacity="0.85"/>
+  <circle cx="280" cy="100" r="12" fill="#FF6B4A" opacity="0.85"/>
+  <circle cx="155" cy="68" r="9" fill="#FFD9CC"/>
+  <circle cx="245" cy="68" r="9" fill="#FFD9CC"/>
+  <!-- Hanging flowers -->
+  <circle cx="145" cy="130" r="7" fill="#FF8C69" opacity="0.7"/>
+  <circle cx="255" cy="130" r="7" fill="#FF8C69" opacity="0.7"/>
+  <circle cx="200" cy="62" r="8" fill="#FFB703" opacity="0.8"/>
+
+  <!-- Bride silhouette -->
+  <ellipse cx="175" cy="97" rx="13" ry="13" fill="#3D2015"/>
+  <!-- Hair bun -->
+  <circle cx="175" cy="84" r="9" fill="#2B1A10"/>
+  <!-- Dress top -->
+  <path d="M163,110 Q175,105 187,110 L190,165 Q175,170 160,165 Z" fill="url(#dress)"/>
+  <!-- Dress skirt flare -->
+  <path d="M160,155 Q175,160 190,155 Q200,185 175,195 Q150,185 160,155Z" fill="url(#dress)"/>
+  <!-- Veil -->
+  <path d="M166,86 Q175,80 184,86 L195,130 Q185,128 175,130 Q165,128 155,130 Z" fill="white" opacity="0.6"/>
+  <!-- Bridal flowers -->
+  <circle cx="162" cy="130" r="5" fill="#FFB7C5"/>
+
+  <!-- Groom silhouette -->
+  <ellipse cx="225" cy="97" rx="13" ry="13" fill="#3D2015"/>
+  <!-- Suit body -->
+  <path d="M213,110 Q225,105 237,110 L240,165 Q225,170 210,165 Z" fill="url(#suit)"/>
+  <!-- Tie -->
+  <path d="M222,112 L225,112 L228,112 L226,135 L225,138 L224,135 Z" fill="#FF6B4A"/>
+  <!-- Pocket square -->
+  <rect x="232" y="118" width="6" height="4" rx="1" fill="#FFF8F5"/>
+  <!-- Pants -->
+  <rect x="213" y="162" width="11" height="35" rx="2" fill="#1A1210"/>
+  <rect x="226" y="162" width="11" height="35" rx="2" fill="#1A1210"/>
+
+  <!-- Joined hands -->
+  <path d="M188,140 Q206,138 213,140" stroke="#C4845A" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+  <!-- Fairy lights on arch -->
+  <circle cx="130" cy="115" r="3" fill="#FFE066" opacity="0.9"/>
+  <circle cx="142" cy="85" r="3" fill="#FFE066" opacity="0.9"/>
+  <circle cx="165" cy="55" r="3" fill="#FFE066" opacity="0.9"/>
+  <circle cx="200" cy="45" r="3" fill="#FFE066" opacity="0.9"/>
+  <circle cx="235" cy="55" r="3" fill="#FFE066" opacity="0.9"/>
+  <circle cx="258" cy="85" r="3" fill="#FFE066" opacity="0.9"/>
+  <circle cx="270" cy="115" r="3" fill="#FFE066" opacity="0.9"/>
+
+  <!-- Petals on ground -->
+  <ellipse cx="145" cy="215" rx="6" ry="3" fill="#FFD9CC" opacity="0.8" transform="rotate(-20,145,215)"/>
+  <ellipse cx="255" cy="215" rx="6" ry="3" fill="#FFB7C5" opacity="0.8" transform="rotate(15,255,215)"/>
+  <ellipse cx="200" cy="213" rx="5" ry="2.5" fill="#FFD9CC" opacity="0.7"/>
+
+  <!-- Background silhouette guests -->
+  <ellipse cx="80" cy="175" rx="10" ry="10" fill="#2B1A10" opacity="0.4"/>
+  <rect x="72" y="183" width="16" height="30" rx="3" fill="#2B1A10" opacity="0.35"/>
+  <ellipse cx="320" cy="175" rx="10" ry="10" fill="#2B1A10" opacity="0.4"/>
+  <rect x="312" y="183" width="16" height="30" rx="3" fill="#2B1A10" opacity="0.35"/>
+
+  <!-- Sparkle stars -->
+  <text x="308" y="60" font-size="16" fill="#FFE066" opacity="0.8">✦</text>
+  <text x="75" y="90" font-size="12" fill="#FFD580" opacity="0.7">✦</text>
+  <text x="340" y="140" font-size="10" fill="#FFE066" opacity="0.6">✦</text>
+</svg>

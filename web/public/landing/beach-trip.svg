@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="bsky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2196C4"/>
+      <stop offset="55%" stop-color="#87CEEB"/>
+      <stop offset="100%" stop-color="#FFD580"/>
+    </linearGradient>
+    <linearGradient id="bsea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1E90C4"/>
+      <stop offset="100%" stop-color="#005A8C"/>
+    </linearGradient>
+    <linearGradient id="bsand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5D994"/>
+      <stop offset="100%" stop-color="#D4A84B"/>
+    </linearGradient>
+    <radialGradient id="bsun" cx="80%" cy="15%" r="20%">
+      <stop offset="0%" stop-color="#FFE55A" stop-opacity="1"/>
+      <stop offset="60%" stop-color="#FFB703" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#FFD580" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="400" height="300" fill="url(#bsky)"/>
+  <!-- Sun -->
+  <circle cx="320" cy="50" r="32" fill="url(#bsun)"/>
+  <circle cx="320" cy="50" r="22" fill="#FFE066"/>
+
+  <!-- Clouds -->
+  <ellipse cx="80" cy="55" rx="40" ry="18" fill="white" opacity="0.7"/>
+  <ellipse cx="110" cy="48" rx="30" ry="16" fill="white" opacity="0.7"/>
+  <ellipse cx="55" cy="60" rx="25" ry="13" fill="white" opacity="0.6"/>
+
+  <!-- Sea -->
+  <rect x="0" y="165" width="400" height="80" fill="url(#bsea)"/>
+  <!-- Waves -->
+  <path d="M0,170 Q50,162 100,170 Q150,178 200,170 Q250,162 300,170 Q350,178 400,170 L400,180 Q350,188 300,180 Q250,172 200,180 Q150,188 100,180 Q50,172 0,180 Z" fill="white" opacity="0.3"/>
+  <path d="M0,185 Q40,178 80,185 Q120,192 160,185 Q200,178 240,185 Q280,192 320,185 Q360,178 400,185 L400,192 L0,192 Z" fill="white" opacity="0.2"/>
+
+  <!-- Sand -->
+  <path d="M0,200 Q100,190 200,195 Q300,200 400,190 L400,300 L0,300 Z" fill="url(#bsand)"/>
+
+  <!-- Palm tree left -->
+  <path d="M50,220 Q55,180 60,145" stroke="#5D3A1A" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M60,145 Q30,120 10,130" stroke="#3A6B2A" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M60,145 Q50,110 65,100" stroke="#3A6B2A" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M60,145 Q80,118 95,125" stroke="#3A6B2A" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="15" cy="128" rx="22" ry="10" fill="#3A6B2A" transform="rotate(-25,15,128)"/>
+  <ellipse cx="65" cy="98" rx="20" ry="9" fill="#4A8A35" transform="rotate(10,65,98)"/>
+  <ellipse cx="96" cy="123" rx="20" ry="9" fill="#3A6B2A" transform="rotate(-10,96,123)"/>
+  <!-- Coconut -->
+  <circle cx="58" cy="155" r="6" fill="#8B4513"/>
+
+  <!-- Palm tree right -->
+  <path d="M350,225 Q348,185 345,150" stroke="#5D3A1A" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M345,150 Q315,125 295,133" stroke="#3A6B2A" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M345,150 Q340,112 350,100" stroke="#3A6B2A" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M345,150 Q370,120 388,128" stroke="#3A6B2A" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="295" cy="131" rx="22" ry="10" fill="#3A6B2A" transform="rotate(20,295,131)"/>
+  <ellipse cx="350" cy="98" rx="20" ry="9" fill="#4A8A35"/>
+  <ellipse cx="389" cy="126" rx="20" ry="9" fill="#3A6B2A" transform="rotate(-20,389,126)"/>
+
+  <!-- Friends group silhouettes -->
+  <!-- Person 1 (leftmost) -->
+  <ellipse cx="145" cy="192" rx="11" ry="11" fill="#3D2015"/>
+  <rect x="136" y="202" width="18" height="28" rx="4" fill="#FF6B4A"/>
+  <rect x="136" y="228" width="7" height="18" rx="2" fill="#1A3D6B"/>
+  <rect x="145" y="228" width="7" height="18" rx="2" fill="#1A3D6B"/>
+  <!-- raised arm -->
+  <path d="M136,210 Q120,200 115,192" stroke="#C4845A" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+  <!-- Person 2 -->
+  <ellipse cx="180" cy="188" rx="12" ry="12" fill="#C4845A"/>
+  <path d="M168,200 Q180,196 192,200 L195,228 Q180,233 165,228 Z" fill="#FFB703"/>
+  <rect x="168" y="225" width="8" height="22" rx="2" fill="#2B4A1A"/>
+  <rect x="179" y="225" width="8" height="22" rx="2" fill="#2B4A1A"/>
+  <!-- Camera in hand -->
+  <rect x="192" y="204" width="14" height="10" rx="2" fill="#2B2118"/>
+  <circle cx="199" cy="209" r="3.5" fill="#87CEEB"/>
+  <path d="M192,208 L180,210" stroke="#2B2118" stroke-width="2.5" fill="none"/>
+
+  <!-- Person 3 (center, tallest) -->
+  <ellipse cx="215" cy="184" rx="13" ry="13" fill="#8B5E3C"/>
+  <path d="M202,197 Q215,193 228,197 L231,230 Q215,236 199,230 Z" fill="#2196C4"/>
+  <rect x="201" y="227" width="9" height="25" rx="2" fill="#D4A84B"/>
+  <rect x="213" y="227" width="9" height="25" rx="2" fill="#D4A84B"/>
+  <!-- waving arm -->
+  <path d="M228,205 Q244,195 250,187" stroke="#C4845A" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- hand wave -->
+  <circle cx="250" cy="186" r="5" fill="#C4845A"/>
+
+  <!-- Person 4 -->
+  <ellipse cx="250" cy="191" rx="11" ry="11" fill="#2B1A10"/>
+  <path d="M240,202 Q250,198 260,202 L262,228 Q250,233 238,228 Z" fill="#FF6B4A"/>
+  <rect x="239" y="225" width="8" height="20" rx="2" fill="#1A1A5A"/>
+  <rect x="249" y="225" width="8" height="20" rx="2" fill="#1A1A5A"/>
+
+  <!-- Selfie stick + phone -->
+  <rect x="258" y="183" width="3" height="35" rx="1" fill="#888" transform="rotate(-20,258,183)"/>
+  <rect x="250" y="168" width="20" height="14" rx="3" fill="#2B2118"/>
+  <rect x="252" y="170" width="16" height="10" rx="2" fill="#87CEEB" opacity="0.8"/>
+
+  <!-- Umbrella on beach -->
+  <line x1="100" y1="240" x2="100" y2="280" stroke="#8B4513" stroke-width="3"/>
+  <path d="M60,240 Q100,210 140,240 Z" fill="#FF6B4A" opacity="0.85"/>
+  <path d="M80,240 Q100,215 120,240" fill="#FFB703" opacity="0.75"/>
+
+  <!-- Shells on sand -->
+  <ellipse cx="310" cy="262" rx="8" ry="5" fill="#FFD9CC" opacity="0.8" transform="rotate(-15,310,262)"/>
+  <ellipse cx="330" cy="258" rx="6" ry="4" fill="#FFA07A" opacity="0.7"/>
+  <ellipse cx="295" cy="270" rx="5" ry="3" fill="#FFE8DC" opacity="0.8"/>
+
+  <!-- Footprints -->
+  <ellipse cx="168" cy="275" rx="4" ry="6" fill="#D4A84B" opacity="0.5" transform="rotate(10,168,275)"/>
+  <ellipse cx="175" cy="265" rx="4" ry="6" fill="#D4A84B" opacity="0.5" transform="rotate(-10,175,265)"/>
+  <ellipse cx="183" cy="275" rx="4" ry="6" fill="#D4A84B" opacity="0.5" transform="rotate(10,183,275)"/>
+</svg>

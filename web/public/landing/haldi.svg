@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <defs>
+    <linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFD580"/>
+      <stop offset="50%" stop-color="#FFF1CC"/>
+      <stop offset="100%" stop-color="#FFF7F0"/>
+    </linearGradient>
+    <linearGradient id="hground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8C848"/>
+      <stop offset="100%" stop-color="#C4A020"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="400" height="300" fill="url(#hsky)"/>
+  <!-- Ground / outdoor courtyard -->
+  <rect x="0" y="210" width="400" height="90" fill="url(#hground)"/>
+
+  <!-- Marigold garlands top -->
+  <path d="M0,25 Q100,15 200,20 Q300,25 400,15" stroke="#FFB703" stroke-width="6" fill="none" opacity="0.8"/>
+  <!-- Flowers on garland -->
+  <circle cx="30" cy="23" r="8" fill="#FF6B4A" opacity="0.85"/>
+  <circle cx="80" cy="18" r="8" fill="#FFB703" opacity="0.85"/>
+  <circle cx="130" cy="20" r="8" fill="#FF6B4A" opacity="0.85"/>
+  <circle cx="180" cy="18" r="8" fill="#FFB703" opacity="0.85"/>
+  <circle cx="230" cy="20" r="8" fill="#FF6B4A" opacity="0.85"/>
+  <circle cx="280" cy="18" r="8" fill="#FFB703" opacity="0.85"/>
+  <circle cx="330" cy="22" r="8" fill="#FF6B4A" opacity="0.85"/>
+  <circle cx="380" cy="17" r="8" fill="#FFB703" opacity="0.85"/>
+
+  <!-- Marigold garland second row -->
+  <path d="M0,55 Q100,45 200,50 Q300,55 400,45" stroke="#FF6B4A" stroke-width="4" fill="none" opacity="0.6"/>
+  <circle cx="50" cy="52" r="6" fill="#FFB703" opacity="0.75"/>
+  <circle cx="150" cy="48" r="6" fill="#FF6B4A" opacity="0.75"/>
+  <circle cx="250" cy="50" r="6" fill="#FFB703" opacity="0.75"/>
+  <circle cx="350" cy="48" r="6" fill="#FF6B4A" opacity="0.75"/>
+
+  <!-- Haldi ceremony participants -->
+  <!-- Center person (the bride/groom getting haldi) seated -->
+  <ellipse cx="200" cy="175" rx="16" ry="16" fill="#C4845A"/>
+  <!-- Haldi stains on face -->
+  <circle cx="193" cy="172" r="5" fill="#FFD580" opacity="0.8"/>
+  <circle cx="207" cy="170" r="4" fill="#FFB703" opacity="0.7"/>
+  <circle cx="200" cy="178" r="4" fill="#FFD580" opacity="0.6"/>
+  <!-- White outfit -->
+  <path d="M185,190 Q200,185 215,190 L220,215 Q200,222 180,215 Z" fill="#FFF8F5"/>
+  <!-- Dupatta/shawl -->
+  <path d="M185,190 Q175,210 170,230" stroke="#FFD9CC" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <!-- Seated legs -->
+  <path d="M183,215 Q190,235 195,245" stroke="#C4845A" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M217,215 Q210,235 205,245" stroke="#C4845A" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- Flower garland on seated person -->
+  <path d="M188,192 Q200,186 212,192" stroke="#FF6B4A" stroke-width="3" fill="none"/>
+
+  <!-- Person applying haldi (left) -->
+  <ellipse cx="145" cy="168" rx="13" ry="13" fill="#8B5E3C"/>
+  <path d="M134,180 Q145,176 156,180 L158,210 Q145,214 132,210 Z" fill="#FFB703"/>
+  <!-- arm extending with bowl -->
+  <path d="M156,187 Q170,180 175,175" stroke="#8B5E3C" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- Haldi bowl -->
+  <ellipse cx="177" cy="174" rx="10" ry="6" fill="#E8C848"/>
+  <ellipse cx="177" cy="171" rx="10" ry="6" fill="#FFB703"/>
+  <!-- Haldi drips -->
+  <circle cx="185" cy="177" r="3" fill="#FFD580" opacity="0.7"/>
+  <circle cx="192" cy="180" r="2.5" fill="#FFB703" opacity="0.6"/>
+
+  <!-- Person applying haldi (right) -->
+  <ellipse cx="258" cy="165" rx="13" ry="13" fill="#C4A480"/>
+  <path d="M247,177 Q258,173 269,177 L271,207 Q258,211 246,207 Z" fill="#FF6B4A"/>
+  <!-- hair bun -->
+  <circle cx="258" cy="153" r="9" fill="#2B1A10"/>
+  <!-- arm extending -->
+  <path d="M247,184 Q235,177 228,172" stroke="#C4845A" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- small bowl -->
+  <ellipse cx="226" cy="171" rx="9" ry="5" fill="#FFB703"/>
+  <ellipse cx="226" cy="168" rx="9" ry="5" fill="#E8C848"/>
+
+  <!-- Watching family left -->
+  <ellipse cx="90" cy="180" rx="12" ry="12" fill="#3D2015"/>
+  <path d="M79,191 Q90,187 101,191 L102,215 Q90,218 78,215 Z" fill="#A855F7"/>
+  <!-- Clapping hands -->
+  <path d="M79,197 Q68,192 63,187" stroke="#C4845A" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+  <!-- Watching family right -->
+  <ellipse cx="318" cy="178" rx="12" ry="12" fill="#C4845A"/>
+  <path d="M307,189 Q318,185 329,189 L330,215 Q318,218 306,215 Z" fill="#2196C4"/>
+  <path d="M329,195 Q342,189 347,183" stroke="#C4845A" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+  <!-- Flower petals on ground -->
+  <ellipse cx="160" cy="225" rx="7" ry="3.5" fill="#FF6B4A" opacity="0.6" transform="rotate(-25,160,225)"/>
+  <ellipse cx="240" cy="222" rx="7" ry="3.5" fill="#FFB703" opacity="0.6" transform="rotate(20,240,222)"/>
+  <ellipse cx="200" cy="228" rx="6" ry="3" fill="#FF6B4A" opacity="0.5"/>
+  <ellipse cx="175" cy="232" rx="5" ry="2.5" fill="#FFD9CC" opacity="0.6"/>
+  <ellipse cx="225" cy="230" rx="5" ry="2.5" fill="#FFD580" opacity="0.5"/>
+  <!-- Haldi splatter on ground -->
+  <circle cx="185" cy="240" r="6" fill="#FFB703" opacity="0.4"/>
+  <circle cx="215" cy="238" r="5" fill="#FFD580" opacity="0.35"/>
+  <circle cx="200" cy="245" r="4" fill="#FFB703" opacity="0.3"/>
+
+  <!-- Diya lamps -->
+  <ellipse cx="130" cy="248" rx="10" ry="5" fill="#C4845A"/>
+  <ellipse cx="130" cy="245" rx="10" ry="5" fill="#8B6914"/>
+  <ellipse cx="130" cy="242" rx="6" ry="4" fill="#FFE8DC"/>
+  <ellipse cx="130" cy="240" rx="3" ry="4" fill="#FFD580"/>
+  <ellipse cx="130" cy="239" rx="2" ry="3" fill="#FF6B4A"/>
+  <ellipse cx="270" cy="248" rx="10" ry="5" fill="#C4845A"/>
+  <ellipse cx="270" cy="245" rx="10" ry="5" fill="#8B6914"/>
+  <ellipse cx="270" cy="242" rx="6" ry="4" fill="#FFE8DC"/>
+  <ellipse cx="270" cy="239" rx="2" ry="3" fill="#FF6B4A"/>
+
+  <!-- Sparkle / celebration -->
+  <text x="58" y="125" font-size="18" fill="#FFB703" opacity="0.75">✨</text>
+  <text x="330" y="118" font-size="18" fill="#FF6B4A" opacity="0.75">✨</text>
+  <text x="195" y="85" font-size="14" fill="#FFB703" opacity="0.6">🌼</text>
+</svg>
