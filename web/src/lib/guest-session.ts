@@ -11,6 +11,7 @@
  */
 
 const SESSION_KEY = "pixsort_guest_session";
+const EVENTS_KEY = "pixsort_saved_events";
 
 export interface GuestSession {
   userId: string;
@@ -20,6 +21,42 @@ export interface GuestSession {
   personId?: string;    // set after face enrollment
   memberStatus: "approved" | "pending";
   createdAt: string;
+}
+
+export interface SavedEvent {
+  id: string;
+  name: string;
+  type: string;
+  joinCode: string;
+  role: "host" | "guest";
+  createdAt: string;
+  accent?: string;
+}
+
+// ── Saved Events (Created / Joined) ──────────────────────────────────────────
+
+export function saveUserEvent(event: SavedEvent): void {
+  if (typeof window === "undefined") return;
+  try {
+    const all = getUserEvents();
+    // deduplicate by id or joinCode
+    const filtered = all.filter((e) => e.id !== event.id && e.joinCode !== event.joinCode);
+    const updated = [event, ...filtered];
+    localStorage.setItem(EVENTS_KEY, JSON.stringify(updated.slice(0, 20)));
+  } catch {
+    // storage error ignored
+  }
+}
+
+export function getUserEvents(): SavedEvent[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(EVENTS_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw) as SavedEvent[];
+  } catch {
+    return [];
+  }
 }
 
 // ── Local storage ─────────────────────────────────────────────────────────────

@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Users, ArrowRight, AlertCircle } from 'lucide-react';
 import { Button, Badge, Skeleton } from '@/components/ui';
-import { saveGuestSession } from '@/lib/guest-session';
+import { saveGuestSession, loadGuestSession, saveUserEvent, type GuestSession } from '@/lib/guest-session';
 import { applyEventAccent } from '@/lib/design-tokens';
 import { useToast } from '@/providers/ToastProvider';
 
@@ -25,6 +25,8 @@ export default function JoinPage() {
   const [event, setEvent] = useState<EventInfo | null>(null);
   const [loadingEvent, setLoadingEvent] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [existingSession, setExistingSession] = useState<GuestSession | null>(null);
+  const [rejoinMode, setRejoinMode] = useState(false);
 
   const [guestName, setGuestName] = useState('');
   const [joining, setJoining] = useState(false);
@@ -40,6 +42,10 @@ export default function JoinPage() {
         } else {
           setEvent(ev);
           applyEventAccent(ev.type);
+          const existing = loadGuestSession(ev.id);
+          if (existing) {
+            setExistingSession(existing);
+          }
         }
       })
       .catch(() => setNotFound(true))
@@ -74,6 +80,16 @@ export default function JoinPage() {
         eventId: evId,
         token: data.session_token ?? '',
         memberStatus: data.status ?? data.member_status ?? 'approved',
+        createdAt: new Date().toISOString(),
+      });
+
+      // Save to recent events
+      saveUserEvent({
+        id: evId,
+        name: event?.name || 'PixSort Event',
+        type: event?.type || 'party',
+        joinCode: code,
+        role: 'guest',
         createdAt: new Date().toISOString(),
       });
 
@@ -151,30 +167,68 @@ export default function JoinPage() {
             </div>
           )}
 
-          {/* Name input */}
-          <div className="mb-5">
-            <label className="block text-sm font-medium text-[var(--text)] mb-2">Your name</label>
-            <input
-              type="text"
-              value={guestName}
-              onChange={(e) => setGuestName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
-              placeholder="e.g. Priya"
-              autoFocus
-              className="w-full h-13 px-5 rounded-2xl border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] text-lg"
-              style={{ fontFamily: 'var(--font-heading)' }}
-            />
-          </div>
+          {/* If already joined: offer instant return to album without rescanning */}
+          {existingSession && !rejoinMode ? (
+            <div className="bg-[var(--surface)] p-6 rounded-3xl border border-[var(--border)] shadow-warm space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[var(--accent)] text-white font-bold flex items-center justify-center text-sm">
+                  {existingSession.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <p className="font-semibold text-sm text-[var(--text)]">
+                    Welcome back, {existingSession.name}!
+                  </p>
+                  <p className="text-xs text-[var(--text-secondary)]">
+                    You have already joined this event.
+                  </p>
+                </div>
+              </div>
 
-          <Button
-            size="lg"
-            fullWidth
-            loading={joining}
-            onClick={handleJoin}
-            iconEnd={<ArrowRight className="w-5 h-5" />}
-          >
-            Join Event
-          </Button>
+              <Button
+                size="lg"
+                fullWidth
+                onClick={() => router.push(`/events/${event!.id}/album`)}
+                iconEnd={<ArrowRight className="w-5 h-5" />}
+              >
+                Go Directly to Your Album
+              </Button>
+
+              <button
+                type="button"
+                onClick={() => setRejoinMode(true)}
+                className="w-full text-center text-xs text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors py-1"
+              >
+                Change name or re-scan face →
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Name input */}
+              <div className="mb-5">
+                <label className="block text-sm font-medium text-[var(--text)] mb-2">Your name</label>
+                <input
+                  type="text"
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
+                  placeholder="e.g. Priya"
+                  autoFocus
+                  className="w-full h-13 px-5 rounded-2xl border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)] text-lg"
+                  style={{ fontFamily: 'var(--font-heading)' }}
+                />
+              </div>
+
+              <Button
+                size="lg"
+                fullWidth
+                loading={joining}
+                onClick={handleJoin}
+                iconEnd={<ArrowRight className="w-5 h-5" />}
+              >
+                Join Event
+              </Button>
+            </>
+          )}
         </motion.div>
       </div>
     </div>

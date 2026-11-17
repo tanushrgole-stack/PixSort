@@ -16,8 +16,10 @@ import {
   useEffect,
   useCallback,
 } from 'react';
-import { Camera, QrCode, Smile, Sparkles, Users, Zap } from 'lucide-react';
+import { Camera, QrCode, Smile, Sparkles, Users, Zap, ArrowRight, ShieldCheck, User } from 'lucide-react';
 import { Logo, ThemeToggle } from '@/components/ui';
+import { getUserEvents, type SavedEvent } from '@/lib/guest-session';
+import { EVENT_EMOJI } from '@/lib/design-tokens';
 
 /* ─────────────────────────── Types ─────────────────────────────────────── */
 
@@ -404,11 +406,19 @@ function AnimatedCounter({ target, suffix, label }: { target: number; suffix: st
 
 /* ─────────────────────────── Navbar ─────────────────────────────────────── */
 
-function Navbar() {
+function Navbar({ savedCount = 0 }: { savedCount?: number }) {
   return (
     <nav className="sticky top-0 z-50 w-full px-4 sm:px-6 py-3 flex items-center justify-between glass border-b border-[var(--border)]">
       <Logo />
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5 sm:gap-3">
+        {savedCount > 0 && (
+          <a
+            href="#your-events"
+            className="text-xs sm:text-sm font-semibold text-[var(--accent)] hover:bg-[var(--blush)] px-3 py-1.5 rounded-full border border-[var(--accent)]/30 transition-colors"
+          >
+            My Events ({savedCount})
+          </a>
+        )}
         <ThemeToggle />
         <Link
           href="/create"
@@ -419,6 +429,70 @@ function Navbar() {
         </Link>
       </div>
     </nav>
+  );
+}
+
+/* ─────────────────────────── Your Events Section ───────────────────────── */
+
+function YourEventsSection({ events }: { events: SavedEvent[] }) {
+  if (events.length === 0) return null;
+
+  return (
+    <section id="your-events" className="relative z-20 py-8 px-5 sm:px-8 max-w-5xl mx-auto w-full">
+      <div className="bg-[var(--surface)] border-2 border-[var(--accent)]/30 rounded-3xl p-6 sm:p-8 shadow-card">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[var(--accent)] to-[var(--golden)] flex items-center justify-center text-white shadow-soft">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-xl sm:text-2xl font-bold text-[var(--text)]" style={{ fontFamily: 'var(--font-heading)' }}>
+                Your Events
+              </h2>
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
+                Jump straight back in without re-scanning or re-entering codes
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/create"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent)] hover:underline"
+          >
+            + Create another
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {events.slice(0, 6).map((ev) => (
+            <Link
+              key={`${ev.id}-${ev.joinCode}`}
+              href={ev.role === 'host' ? `/events/${ev.id}` : `/events/${ev.id}/album`}
+              className="p-4 rounded-2xl border border-[var(--border)] bg-[var(--bg)] hover:border-[var(--accent)] hover:shadow-soft transition-all group flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-2xl">{EVENT_EMOJI[ev.type as keyof typeof EVENT_EMOJI] || '📸'}</span>
+                  <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full capitalize flex items-center gap-1 ${ev.role === 'host' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-300'}`}>
+                    {ev.role === 'host' ? '👑 Host' : '👤 Joined'}
+                  </span>
+                </div>
+                <h3 className="font-bold text-sm text-[var(--text)] group-hover:text-[var(--accent)] transition-colors truncate">
+                  {ev.name}
+                </h3>
+                <p className="font-mono text-xs text-[var(--text-secondary)] mt-1">
+                  Code: <strong className="text-[var(--accent)]">{ev.joinCode}</strong>
+                </p>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-[var(--border)] flex items-center justify-between text-xs font-semibold text-[var(--accent)]">
+                <span>{ev.role === 'host' ? 'Open Dashboard' : 'View Your Album'}</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -481,7 +555,12 @@ function MediumCards() {
 export default function HomePage() {
   const [particles, setParticles]       = useState<Particle[]>([]);
   const [confettiOrigin, setConfettiOrigin] = useState({ x: 0, y: 0 });
+  const [savedEvents, setSavedEvents]   = useState<SavedEvent[]>([]);
   const shouldReduceMotion              = useReducedMotion();
+
+  useEffect(() => {
+    setSavedEvents(getUserEvents());
+  }, []);
 
   /* ── Confetti burst on CTA click ── */
   const handleCTAClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -508,7 +587,7 @@ export default function HomePage() {
       )}
 
       <div className="relative z-10 min-h-screen flex flex-col">
-        <Navbar />
+        <Navbar savedCount={savedEvents.length} />
 
         {/* ══════════ HERO SECTION ══════════ */}
         <section className="relative flex-1 grid grid-cols-1 xl:grid-cols-[300px_1fr_300px] min-h-[88vh] items-center">
@@ -628,6 +707,9 @@ export default function HomePage() {
           {/* Right card column */}
           <CardColumn cards={RIGHT_CARDS} side="right" />
         </section>
+
+        {/* ══════════ YOUR EVENTS ══════════ */}
+        <YourEventsSection events={savedEvents} />
 
         {/* ══════════ MARQUEE ══════════ */}
         <section

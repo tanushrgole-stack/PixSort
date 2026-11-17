@@ -96,6 +96,18 @@ export default function ScanPage() {
                 {photoCount.toLocaleString()} photos waiting to be sorted
               </p>
             )}
+            {session.personId && (
+              <div className="mb-6 p-4 rounded-2xl bg-[var(--surface)] border border-[var(--accent)] text-left shadow-soft flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold text-[var(--accent)] uppercase tracking-wider">Already Enrolled</p>
+                  <p className="text-sm font-semibold text-[var(--text)]">Face scan already on file</p>
+                </div>
+                <Button size="sm" onClick={() => router.push(`/events/${session.eventId}/album`)}>
+                  Go to Album
+                </Button>
+              </div>
+            )}
+
             <div className="bg-[var(--surface)] rounded-3xl p-5 shadow-card text-left space-y-3 mb-8">
               {['Quick 10-second scan', 'Only your face embedding is saved — not the selfie', 'Works even if uploads happen later'].map((tip, i) => (
                 <div key={i} className="flex items-start gap-3 text-sm text-[var(--text-secondary)]">

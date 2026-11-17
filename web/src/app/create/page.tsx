@@ -11,6 +11,7 @@ import { Button, Badge } from '@/components/ui';
 import { EVENT_EMOJI, applyEventAccent, EVENT_DEFAULT_MOMENTS } from '@/lib/design-tokens';
 import { useToast } from '@/providers/ToastProvider';
 import { StepBar } from '@/components/StepBar';
+import { saveUserEvent, saveGuestSession } from '@/lib/guest-session';
 
 // ─── Type definitions ─────────────────────────────────────────────────────────
 
@@ -515,8 +516,26 @@ export default function CreateEventPage() {
       if (!res.ok) throw new Error('Failed to create event');
       const data = await res.json();
       const ev = data.event ?? data;
-      setJoinCode(ev.join_code ?? data.join_code ?? 'PIXSORT');
-      setEventId(ev.id ?? data.id ?? '');
+      const code = ev.join_code ?? data.join_code ?? 'PIXSORT';
+      const id = ev.id ?? data.id ?? '';
+      setJoinCode(code);
+      setEventId(id);
+      saveUserEvent({
+        id,
+        name: name.trim(),
+        type: eventType || 'wedding',
+        joinCode: code,
+        role: 'host',
+        createdAt: new Date().toISOString(),
+      });
+      saveGuestSession({
+        userId: '00000000-0000-0000-0000-000000000001',
+        name: 'Host',
+        eventId: id,
+        token: '',
+        memberStatus: 'approved',
+        createdAt: new Date().toISOString(),
+      });
       setDir(1);
       setStep(4);
     } catch (err) {
@@ -526,6 +545,14 @@ export default function CreateEventPage() {
       const fallbackId = 'local-' + Date.now();
       setJoinCode(fallbackCode);
       setEventId(fallbackId);
+      saveUserEvent({
+        id: fallbackId,
+        name: name.trim(),
+        type: eventType || 'wedding',
+        joinCode: fallbackCode,
+        role: 'host',
+        createdAt: new Date().toISOString(),
+      });
       setDir(1);
       setStep(4);
     } finally {
