@@ -17,10 +17,11 @@ import { apiOk, apiError, joinUrl, qrPayload } from "@/lib/api-helpers";
 export async function POST(req: NextRequest) {
   const db = createServerClient();
 
-  let body: { join_code?: string; name?: string };
+  let body: { join_code?: string; code?: string; name?: string };
   try { body = await req.json(); } catch { return apiError("Invalid JSON"); }
 
-  const { join_code, name } = body;
+  const join_code = body.join_code || body.code;
+  const name = body.name;
   if (!join_code || !name) return apiError("join_code and name are required");
 
   // 1. Find event
@@ -62,8 +63,11 @@ export async function POST(req: NextRequest) {
 
   return apiOk({
     user,
+    user_id: user.id,
     event,
+    eventId: event.id,
     member_status,
+    status: member_status,
     pending_approval: member_status === "pending",
     join_url:   joinUrl(event.join_code),
     qr_payload: qrPayload(event.join_code),

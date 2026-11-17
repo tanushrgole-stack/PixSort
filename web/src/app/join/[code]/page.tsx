@@ -31,16 +31,18 @@ export default function JoinPage() {
 
   useEffect(() => {
     if (!code) return;
-    fetch(`/api/join?code=${code}`)
+    fetch(`/api/join?code=${encodeURIComponent(code)}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
-        if (!data) {
+        const ev = data?.event ?? data;
+        if (!ev || !ev.id) {
           setNotFound(true);
         } else {
-          setEvent(data);
-          applyEventAccent(data.type);
+          setEvent(ev);
+          applyEventAccent(ev.type);
         }
       })
+      .catch(() => setNotFound(true))
       .finally(() => setLoadingEvent(false));
   }, [code]);
 
@@ -54,18 +56,24 @@ export default function JoinPage() {
       const res = await fetch('/api/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, name: guestName.trim() }),
+        body: JSON.stringify({
+          join_code: code,
+          code,
+          name: guestName.trim(),
+        }),
       });
       if (!res.ok) throw new Error();
       const data = await res.json();
+      const userId = data.user_id ?? data.user?.id ?? `guest-${Date.now()}`;
+      const evId = event?.id ?? data.event?.id ?? data.eventId ?? '';
 
       // Save session
       saveGuestSession({
-        userId: data.user_id,
+        userId,
         name: guestName.trim(),
-        eventId: event!.id,
+        eventId: evId,
         token: data.session_token ?? '',
-        memberStatus: data.status ?? 'approved',
+        memberStatus: data.status ?? data.member_status ?? 'approved',
         createdAt: new Date().toISOString(),
       });
 

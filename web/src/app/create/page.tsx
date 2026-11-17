@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import {
@@ -343,10 +343,27 @@ function StepUploadMode({
 
 function StepShare({ joinCode, eventId }: { joinCode: string; eventId: string }) {
   const { addToast } = useToast();
-  const joinUrl = typeof window !== 'undefined' ? `${window.location.origin}/join/${joinCode}` : '';
+  const [networkBaseUrl, setNetworkBaseUrl] = useState<string>('');
+
+  useEffect(() => {
+    fetch('/api/network-ip')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.baseUrl) setNetworkBaseUrl(d.baseUrl);
+      })
+      .catch(() => {});
+  }, []);
+
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+  // Use the LAN network IP for the QR code so mobile devices on the same Wi-Fi can open it!
+  const effectiveBaseUrl = isLocal && networkBaseUrl ? networkBaseUrl : origin;
+  const joinUrl = effectiveBaseUrl ? `${effectiveBaseUrl}/join/${joinCode}` : '';
+  const localUrl = origin ? `${origin}/join/${joinCode}` : '';
 
   function copyLink() {
-    navigator.clipboard.writeText(joinUrl);
+    navigator.clipboard.writeText(joinUrl || localUrl);
     addToast({ kind: 'success', message: 'Link copied to clipboard!' });
   }
 
@@ -377,32 +394,48 @@ function StepShare({ joinCode, eventId }: { joinCode: string; eventId: string })
       <h2 className="text-3xl font-bold mb-2" style={{ fontFamily: 'var(--font-heading)' }}>
         Your event is live! 🎉
       </h2>
-      <p className="text-[var(--text-secondary)] mb-8">Share this link or QR code with your guests.</p>
+      <p className="text-[var(--text-secondary)] mb-6">Share this link or QR code with your guests.</p>
 
       {/* Join link */}
-      <div className="bg-[var(--muted)] rounded-2xl p-4 mb-4 flex items-center gap-3">
-        <div className="flex-1 text-left font-mono text-sm text-[var(--text)] truncate">{joinUrl}</div>
+      <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-4 mb-4 flex items-center gap-3 shadow-soft">
+        <div className="flex-1 text-left font-mono text-sm text-[var(--text)] truncate">{joinUrl || localUrl}</div>
         <Button size="sm" variant="primary" onClick={copyLink} icon={<Copy className="w-3.5 h-3.5" />}>
           Copy
         </Button>
       </div>
 
       {/* QR code */}
-      <div className="bg-[var(--surface)] rounded-2xl p-6 inline-block shadow-card border border-[var(--border)] mb-6">
+      <div className="bg-[var(--surface)] rounded-3xl p-6 inline-block shadow-card border border-[var(--border)] mb-4">
         <img
-          src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&bgcolor=ffffff&color=FF6B4A&data=${encodeURIComponent(joinUrl)}`}
+          src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&bgcolor=ffffff&color=FF6B4A&data=${encodeURIComponent(joinUrl || localUrl)}`}
           alt="QR code"
-          width={180}
-          height={180}
-          className="rounded-xl"
+          width={200}
+          height={200}
+          className="rounded-xl mx-auto"
         />
-        <p className="text-xs text-[var(--text-secondary)] mt-3">Scan to join</p>
+        <p className="text-xs text-[var(--text-secondary)] mt-3 font-medium">Scan with phone camera to join</p>
+        {isLocal && (
+          <p className="text-[11px] text-[var(--muted)] mt-1">
+            (Phone & computer must be on the same Wi-Fi network)
+          </p>
+        )}
       </div>
 
-      {/* Join code badge */}
-      <div className="flex items-center justify-center gap-2">
-        <span className="text-sm text-[var(--text-secondary)]">Code:</span>
-        <span className="font-mono font-bold text-lg tracking-widest text-[var(--accent)]">{joinCode}</span>
+      {/* Join code badge & quick actions */}
+      <div className="flex flex-col items-center justify-center gap-3">
+        <div className="flex items-center gap-2 bg-[var(--blush)] px-4 py-2 rounded-full border border-[var(--border)]">
+          <span className="text-xs text-[var(--text-secondary)] font-medium">Join Code:</span>
+          <span className="font-mono font-bold text-base tracking-widest text-[var(--accent)]">{joinCode}</span>
+        </div>
+
+        <a
+          href={localUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-[var(--accent)] hover:underline inline-flex items-center gap-1 font-medium mt-1"
+        >
+          Open join page in new tab ↗
+        </a>
       </div>
     </div>
   );
