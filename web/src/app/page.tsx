@@ -17,7 +17,7 @@ import {
   useCallback,
 } from 'react';
 import { Camera, QrCode, Smile, Sparkles, Users, Zap } from 'lucide-react';
-import { Logo } from '@/components/ui';
+import { Logo, ThemeToggle } from '@/components/ui';
 
 /* ─────────────────────────── Types ─────────────────────────────────────── */
 
@@ -311,16 +311,16 @@ function RotatingWord() {
 
   return (
     <span
-      className="relative inline-block overflow-hidden"
-      style={{ minWidth: '11ch', display: 'inline-flex', justifyContent: 'center' }}
+      className="relative inline-block overflow-hidden align-baseline"
+      style={{ minWidth: '9.5ch', display: 'inline-flex', justifyContent: 'center' }}
     >
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.span
           key={wordIndex}
-          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 28 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: -28 }}
-          transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
+          initial={shouldReduceMotion ? { y: 0 } : { y: '100%' }}
+          animate={{ y: 0 }}
+          exit={shouldReduceMotion ? { y: 0 } : { y: '-100%' }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           className="gradient-text font-bold"
         >
           {ROTATING_WORDS[wordIndex]}
@@ -406,18 +406,10 @@ function AnimatedCounter({ target, suffix, label }: { target: number; suffix: st
 
 function Navbar() {
   return (
-    <nav
-      className="sticky top-0 z-50 w-full px-4 sm:px-6 py-3 flex items-center justify-between"
-      style={{
-        background: 'rgba(var(--bg-rgb, 255,247,240), 0.85)',
-        backdropFilter: 'blur(14px)',
-        WebkitBackdropFilter: 'blur(14px)',
-        borderBottom: '1px solid var(--border)',
-      }}
-    >
+    <nav className="sticky top-0 z-50 w-full px-4 sm:px-6 py-3 flex items-center justify-between glass border-b border-[var(--border)]">
       <Logo />
       <div className="flex items-center gap-3">
-        <ThemeToggleButton />
+        <ThemeToggle />
         <Link
           href="/create"
           className="btn-primary text-sm flex items-center gap-1.5"
@@ -427,36 +419,6 @@ function Navbar() {
         </Link>
       </div>
     </nav>
-  );
-}
-
-/* ─── Minimal theme toggle (no extra dep) ─── */
-function ThemeToggleButton() {
-  const [dark, setDark] = useState(false);
-  useEffect(() => {
-    setDark(document.documentElement.classList.contains('dark'));
-  }, []);
-  const toggle = () => {
-    const isDark = document.documentElement.classList.toggle('dark');
-    setDark(isDark);
-  };
-  return (
-    <button
-      onClick={toggle}
-      aria-label="Toggle dark mode"
-      className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[var(--blush)] transition-colors"
-      style={{ color: 'var(--text-secondary)' }}
-    >
-      {dark ? (
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-          <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-        </svg>
-      ) : (
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-      )}
-    </button>
   );
 }
 
@@ -538,13 +500,6 @@ export default function HomePage() {
     setTimeout(() => setParticles([]), 1600);
   }, [shouldReduceMotion]);
 
-  /* ── Refs for how-it-works ── */
-  const howRef  = useRef<HTMLElement>(null);
-  const howView = useInView(howRef, { once: true, margin: '-60px' });
-
-  const statRef  = useRef<HTMLElement>(null);
-  const statView = useInView(statRef, { once: true, margin: '-60px' });
-
   return (
     <>
       <AnimatedBackground />
@@ -566,10 +521,7 @@ export default function HomePage() {
             <MediumCards />
 
             {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
+            <div
               className="mb-6 inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide"
               style={{
                 background: 'var(--accent-light)',
@@ -579,13 +531,10 @@ export default function HomePage() {
             >
               <Zap size={12} />
               AI-powered photo sorting
-            </motion.div>
+            </div>
 
             {/* Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            <h1
               className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-5"
               style={{
                 fontFamily: 'var(--font-heading)',
@@ -599,31 +548,25 @@ export default function HomePage() {
               <br />
               Every face.{' '}
               <span className="gradient-text">Sorted.</span>
-            </motion.h1>
+            </h1>
 
             {/* Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35, duration: 0.6 }}
-              className="mb-8 font-medium"
+            <p
+              className="mb-8 font-medium text-lg"
               style={{
-                fontSize: '1.125rem',
+                fontSize: '18px',
                 lineHeight: 1.6,
                 color: 'var(--text-secondary)',
-                maxWidth: '480px',
+                maxWidth: '520px',
               }}
             >
               Upload together, find yourself instantly. PixSort uses AI to group
               every photo by face — your personal album, ready in seconds.
-            </motion.p>
+            </p>
 
             {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.48, duration: 0.6 }}
-              className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs sm:max-w-none"
+            <div
+              className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs sm:max-w-none justify-center"
             >
               <Link
                 href="/create"
@@ -655,13 +598,10 @@ export default function HomePage() {
                 <QrCode size={18} />
                 Join with code
               </Link>
-            </motion.div>
+            </div>
 
             {/* Social proof */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.65, duration: 0.6 }}
+            <div
               className="mt-8 flex items-center gap-3 text-sm"
               style={{ color: 'var(--muted)' }}
             >
@@ -677,7 +617,7 @@ export default function HomePage() {
                 ))}
               </div>
               <span>Join <strong style={{ color: 'var(--text)' }}>10,000+</strong> photos sorted</span>
-            </motion.div>
+            </div>
 
             {/* Mobile swipe strip */}
             <div className="w-full mt-8">
@@ -718,16 +658,10 @@ export default function HomePage() {
 
         {/* ══════════ HOW IT WORKS ══════════ */}
         <section
-          ref={howRef}
           className="relative z-10 py-20 sm:py-28 px-5 sm:px-8 max-w-5xl mx-auto w-full"
           id="how-it-works"
         >
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={howView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-14"
-          >
+          <div className="text-center mb-14">
             <h2
               className="text-3xl sm:text-4xl font-bold mb-3"
               style={{ fontFamily: 'var(--font-heading)', color: 'var(--text)' }}
@@ -737,15 +671,16 @@ export default function HomePage() {
             <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem' }}>
               Three steps, zero hassle.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {HOW_IT_WORKS.map((step, i) => (
               <motion.div
                 key={step.step}
-                initial={{ opacity: 0, y: 32 }}
-                animate={howView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: i * 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ y: 16 }}
+                whileInView={{ y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 whileHover={shouldReduceMotion ? {} : { y: -4, transition: { duration: 0.2 } }}
                 className="card p-7 flex flex-col items-center text-center card-hover"
               >
@@ -788,20 +723,14 @@ export default function HomePage() {
 
         {/* ══════════ STATS / COUNTERS ══════════ */}
         <section
-          ref={statRef}
           className="relative z-10 py-16 sm:py-20 px-5"
           style={{ background: 'var(--blush)' }}
         >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={statView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6 }}
-            className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-6"
-          >
+          <div className="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-6">
             <AnimatedCounter target={10000} suffix="+" label="photos sorted" />
             <AnimatedCounter target={500}   suffix="+"  label="events created" />
             <AnimatedCounter target={50000} suffix="+"  label="faces matched" />
-          </motion.div>
+          </div>
         </section>
 
         {/* ══════════ CTA BANNER ══════════ */}

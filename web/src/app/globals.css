@@ -22,7 +22,7 @@
   --accent-dark:   #E05030;
 
   /* Text hierarchy */
-  --text-secondary: #7A6457;
+  --text-secondary: #5A4636;
   --font-heading:   var(--font-fraunces, Georgia, serif);
   /* Transition */
   --ease-spring:   cubic-bezier(0.16,1,0.3,1);
